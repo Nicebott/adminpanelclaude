@@ -310,7 +310,7 @@ const STR = {
     footerLinks:'Privacidad · Términos · Publicidad',
     catNames:{tech:'TECNOLOGÍA',world:'MUNDO',biz:'ECONOMÍA',sci:'CIENCIA',sport:'DEPORTES',pol:'POLÍTICA',cult:'CULTURA'},
     readMin:' min de lectura', by:'Por ',
-    ticker:['Actualiza tu portal agregando archivos JSON','Sin WordPress · Sin servidor · Sin complicaciones','Publica artículos nuevos en segundos'],
+    ticker: [], // se genera dinámicamente desde los titulares de los artículos
   },
   en:{
     logoSub:'INDEPENDENT NEWS',
@@ -328,13 +328,111 @@ const STR = {
     footerLinks:'Privacy · Terms · Advertise',
     catNames:{tech:'TECHNOLOGY',world:'WORLD',biz:'ECONOMY',sci:'SCIENCE',sport:'SPORTS',pol:'POLITICS',cult:'CULTURE'},
     readMin:' min read', by:'By ',
-    ticker:['Update your portal by adding JSON files','No WordPress · No server · No hassle','Publish new articles in seconds'],
+    ticker: [], // dynamically generated from article headlines
   }
 };
 
 let lang = 'es';
 let ARTICLES = [];
 let currentArticleFull = null;
+
+// ─── CATEGORY FILTER ─────────────────────────────────
+let activeCategory = null;
+
+function filterCat(el) {
+  document.querySelectorAll('.main-nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  activeCategory = el.dataset.cat || null;
+  renderWithFilter();
+}
+
+function getFilteredArticles() {
+  if (!activeCategory) return ARTICLES;
+  return ARTICLES.filter(a => a.cat === activeCategory);
+}
+
+function renderWithFilter() {
+  const filtered = getFilteredArticles();
+  const s = STR[lang];
+
+  if (filtered.length === 0) {
+    document.getElementById('heroGrid').innerHTML = `
+      <div style="grid-column:span 3;padding:60px;text-align:center;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.15em">
+        ${lang==='es'?'NO HAY ARTÍCULOS EN ESTA CATEGORÍA AÚN':'NO ARTICLES IN THIS CATEGORY YET'}
+      </div>`;
+    document.getElementById('cardGrid').innerHTML = '';
+    document.getElementById('opinionList').innerHTML = '';
+    document.getElementById('trendList').innerHTML = '';
+    return;
+  }
+
+  const big  = filtered[0];
+  const med1 = filtered[1];
+  const med2 = filtered[2];
+  const side = filtered.slice(3, 5);
+  const catName = s.catNames[big.cat] || big.cat.toUpperCase();
+
+  const midHTML = [med1, med2].map(a => a ? `
+    <div class="hero-cell med fade-in" onclick="location.href='/${a.id}'">
+      <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat.toUpperCase()}</div>
+      <div class="article-title med">${a[lang].title}</div>
+      <div class="article-excerpt" style="font-size:12px">${a[lang].excerpt}</div>
+      <div class="article-meta">${a.readMin}${s.readMin}</div>
+    </div>` : `<div class="hero-cell med" style="background:var(--surface2);flex:1"></div>`
+  ).join('');
+
+  const sideHTML = side.map(a => `
+    <div class="sidebar-art fade-in" onclick="location.href='/${a.id}'">
+      <div class="article-cat cat-${a.cat}" style="margin-bottom:5px">${s.catNames[a.cat]||a.cat.toUpperCase()}</div>
+      <div class="article-title sml">${a[lang].title}</div>
+      <div class="article-meta" style="margin-top:5px">${a.readMin}${s.readMin}</div>
+    </div>`).join('');
+
+  document.getElementById('heroGrid').innerHTML = `
+    <div class="hero-cell big fade-in" onclick="location.href='/${big.id}'">
+      <div class="art-img"><div class="art-img-inner ${big.gradient||'g1'}"></div><div class="art-img-label">${catName}</div></div>
+      <div class="article-cat cat-${big.cat}">${catName}</div>
+      <div class="article-title big">${big[lang].title}</div>
+      <div class="article-excerpt">${big[lang].excerpt}</div>
+      <div class="article-meta"><span>${big.author?s.by+big.author:''}</span><span>${big.readMin}${s.readMin}</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">${midHTML}</div>
+    <div style="display:flex;flex-direction:column;background:var(--bg)">
+      ${sideHTML}
+      <div style="flex:1;min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;border:1px dashed #2a2a2a;margin:16px;">
+        <span class="ad-tag">📢 AdSense 300×250</span>
+      </div>
+    </div>`;
+
+  const cardArts = filtered.slice(5, 8);
+  document.getElementById('cardGrid').innerHTML = cardArts.length
+    ? cardArts.map((a,i)=>`
+        <div class="card fade-in" onclick="location.href='/${a.id}'">
+          <div class="card-num">0${i+1}</div>
+          <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat}</div>
+          <div class="article-title">${a[lang].title}</div>
+          <div class="article-meta" style="margin-top:8px">${a.readMin}${s.readMin}</div>
+        </div>`).join('')
+    : '';
+
+  const recent = filtered.slice(8);
+  document.getElementById('opinionList').innerHTML = recent.length
+    ? recent.map((a,i)=>`
+        <div class="opinion-item" onclick="location.href='/${a.id}'">
+          <div class="opinion-num">0${i+1}</div>
+          <div>
+            <div class="article-title">${a[lang].title}</div>
+            <div class="opinion-author">${a.author||''} · ${a.date}</div>
+          </div>
+        </div>`).join('')
+    : '';
+
+  document.getElementById('trendList').innerHTML = filtered.slice(0,5).map((a,i)=>`
+    <div class="trend-item" onclick="location.href='/${a.id}'">
+      <div class="trend-n">${i+1}</div>
+      <div class="trend-t">${a[lang].title}</div>
+    </div>`).join('');
+}
 
 // ─── FETCH ARTICLES ──────────────────────────────────
 async function loadArticles() {
@@ -387,16 +485,18 @@ function renderPage() {
   document.getElementById('dateStr').textContent =
     new Date().toLocaleDateString(lang==='es'?'es-MX':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-  // Ticker
-  const tItems = s.ticker.map(t=>`<span>${t}</span>`).join('');
+  // Ticker — use article titles as breaking news
+  const tickerItems = ARTICLES.slice(0, 8).map(a => a[lang].title);
+  const tItems = tickerItems.map(t=>`<span>${t}</span>`).join('');
   document.getElementById('tickerEl').innerHTML = tItems + tItems;
 
   document.getElementById('logoSub').textContent = s.logoSub;
   document.getElementById('loadingText').textContent = s.loading;
 
   // Nav
+  const catKeys = [null,'world','tech','biz','sci','sport','cult'];
   document.getElementById('mainNav').innerHTML = s.nav.map((n,i)=>
-    `<a href="#" class="${i===0?'active':''}">${n}</a>`).join('');
+    `<a href="#" data-cat="${catKeys[i]||''}" onclick="filterCat(this)" class="${i===0?'active':''}">${n}</a>`).join('');
 
   // Strings
   document.getElementById('secMore').textContent = s.secMore;
@@ -411,82 +511,8 @@ function renderPage() {
   document.getElementById('footerCopy').textContent = s.footerCopy;
   document.getElementById('footerLinks').textContent = s.footerLinks;
 
-  // HERO GRID
-  const big = ARTICLES[0];
-  const med1 = ARTICLES[1];
-  const med2 = ARTICLES[2];
-  const side = ARTICLES.slice(3, 5);
-
-  if (big) {
-    const catName = s.catNames[big.cat] || big.cat.toUpperCase();
-
-    // Build middle column — always 2 cells, use placeholders if needed
-    const midArts = [med1, med2];
-    const midHTML = midArts.map(a => a ? `
-      <div class="hero-cell med fade-in" onclick="location.href='/${a.id}'">
-        <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat.toUpperCase()}</div>
-        <div class="article-title med">${a[lang].title}</div>
-        <div class="article-excerpt" style="font-size:12px">${a[lang].excerpt}</div>
-        <div class="article-meta">${a.readMin}${s.readMin}</div>
-      </div>` : `<div class="hero-cell med" style="background:var(--surface2);flex:1"></div>`
-    ).join('');
-
-    // Build sidebar — always show ad at bottom, fill with available articles
-    const sideHTML = side.map(a => `
-      <div class="sidebar-art fade-in" onclick="location.href='/${a.id}'">
-        <div class="article-cat cat-${a.cat}" style="margin-bottom:5px">${s.catNames[a.cat]||a.cat.toUpperCase()}</div>
-        <div class="article-title sml">${a[lang].title}</div>
-        <div class="article-meta" style="margin-top:5px">${a.readMin}${s.readMin}</div>
-      </div>`).join('');
-
-    document.getElementById('heroGrid').innerHTML = `
-      <div class="hero-cell big fade-in" onclick="location.href='/${big.id}'">
-        <div class="art-img"><div class="art-img-inner ${big.gradient||'g1'}"></div><div class="art-img-label">${catName}</div></div>
-        <div class="article-cat cat-${big.cat}">${catName}</div>
-        <div class="article-title big">${big[lang].title}</div>
-        <div class="article-excerpt">${big[lang].excerpt}</div>
-        <div class="article-meta"><span>${big.author?s.by+big.author:''}</span><span>${big.readMin}${s.readMin}</span></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">${midHTML}</div>
-      <div style="display:flex;flex-direction:column;background:var(--bg)">
-        ${sideHTML}
-        <div style="flex:1;min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;border:1px dashed #2a2a2a;margin:16px;">
-          <span class="ad-tag">📢 AdSense 300×250</span>
-        </div>
-      </div>`;
-  }
-
-  // CARD GRID (articles 5-7)
-  const cardArts = ARTICLES.slice(5, 8);
-  document.getElementById('cardGrid').innerHTML = cardArts.length
-    ? cardArts.map((a,i)=>`
-        <div class="card fade-in" onclick="location.href='/${a.id}'">
-          <div class="card-num">0${i+1}</div>
-          <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat}</div>
-          <div class="article-title">${a[lang].title}</div>
-          <div class="article-meta" style="margin-top:8px">${a.readMin}${s.readMin}</div>
-        </div>`).join('')
-    : '<div class="card" style="grid-column:span 3;padding:40px;text-align:center;color:var(--muted);font-family:\'IBM Plex Mono\',monospace;font-size:11px;letter-spacing:.15em">MÁS ARTÍCULOS PRÓXIMAMENTE</div>';
-
-  // OPINION / RECENT (remaining articles)
-  const recent = ARTICLES.slice(8);
-  document.getElementById('opinionList').innerHTML = recent.length
-    ? recent.map((a,i)=>`
-        <div class="opinion-item" onclick="location.href='/${a.id}'">
-          <div class="opinion-num">0${i+1}</div>
-          <div>
-            <div class="article-title">${a[lang].title}</div>
-            <div class="opinion-author">${a.author||''} · ${a.date}</div>
-          </div>
-        </div>`).join('')
-    : '';
-
-  // TRENDING (top 5)
-  document.getElementById('trendList').innerHTML = ARTICLES.slice(0,5).map((a,i)=>`
-    <div class="trend-item" onclick="location.href='/${a.id}'">
-      <div class="trend-n">${i+1}</div>
-      <div class="trend-t">${a[lang].title}</div>
-    </div>`).join('');
+  // Render content using filter system (shows all articles by default)
+  renderWithFilter();
 
   // FOOTER
   document.getElementById('footerGrid').innerHTML = `
