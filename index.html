@@ -38,6 +38,31 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
 .ad-leader{background:var(--surface2);border:1px dashed #2a2a2a;width:468px;height:60px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;flex-shrink:0;}
 .ad-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;color:#333;text-transform:uppercase;}
 
+/* SIMULATED ADS */
+.sim-ad{position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:stretch;}
+.sim-ad::before{content:'PUBLICIDAD';position:absolute;top:4px;right:6px;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;color:rgba(255,255,255,.25);z-index:2;}
+.sim-ad-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
+.sim-ad-overlay{position:absolute;inset:0;}
+.sim-ad-body{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:flex-end;padding:14px 16px;width:100%;}
+.sim-ad-brand{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:4px;}
+.sim-ad-title{font-family:'Lora',serif;font-size:14px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:8px;}
+.sim-ad-cta{display:inline-block;background:#fff;color:#000;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;font-weight:600;padding:5px 12px;align-self:flex-start;}
+/* Leaderboard horizontal */
+.sim-ad-leader{display:flex;align-items:center;gap:0;overflow:hidden;height:60px;width:100%;}
+.sim-ad-leader-left{width:60px;height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.sim-ad-leader-mid{flex:1;padding:0 14px;}
+.sim-ad-leader-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.sim-ad-leader-sub{font-size:11px;color:var(--muted);}
+.sim-ad-leader-cta{flex-shrink:0;margin-right:14px;background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;font-weight:700;padding:7px 14px;white-space:nowrap;cursor:pointer;}
+/* Mid banner */
+.sim-ad-banner{display:flex;align-items:center;gap:0;height:90px;overflow:hidden;}
+.sim-ad-banner-left{width:90px;height:90px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.sim-ad-banner-body{flex:1;padding:0 20px;}
+.sim-ad-banner-brand{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.sim-ad-banner-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.sim-ad-banner-sub{font-size:12px;color:var(--muted);}
+.sim-ad-banner-cta{flex-shrink:0;margin-right:20px;background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;font-weight:700;padding:10px 18px;cursor:pointer;white-space:nowrap;}
+
 .main-nav{max-width:1200px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;}
 .main-nav::-webkit-scrollbar{display:none;}
 .main-nav a{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:12px 18px;border-right:1px solid var(--border);white-space:nowrap;transition:all .2s;position:relative;}
@@ -201,9 +226,7 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
       <div class="logo-sub" id="logoSub">NOTICIAS INDEPENDIENTES</div>
       <div class="logo" onclick="showHome()">VÉRTICE</div>
     </div>
-    <div class="ad-leader">
-      <span class="ad-tag">📢 Google AdSense — 468×60</span>
-    </div>
+    <div class="ad-leader" style="background:var(--surface);border:1px solid var(--border);width:468px;height:60px;overflow:hidden;cursor:pointer;" id="adLeader"></div>
   </div>
   <nav class="main-nav" id="mainNav"></nav>
 </header>
@@ -229,9 +252,7 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
       </div>
       <div class="card-grid" id="cardGrid"></div>
 
-      <div class="ad-mid">
-        <span class="ad-tag">📢 Google AdSense — Banner 970×90</span>
-      </div>
+      <div class="ad-mid" style="height:90px;border:none;background:var(--surface);padding:0;" id="adMid1"></div>
 
       <div class="two-col">
         <div>
@@ -252,9 +273,7 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
             <div class="widget-head"><span id="trendH">LO MÁS LEÍDO</span><span>HOY</span></div>
             <div id="trendList"></div>
           </div>
-          <div class="ad-rect">
-            <span class="ad-tag">📢 Google AdSense 300×250</span>
-          </div>
+          <div class="ad-rect" style="border:none;background:transparent;padding:0;" id="adRect1"></div>
         </div>
       </div>
     </div>
@@ -274,9 +293,9 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
 <div class="article-page" id="articlePage">
   <div class="container">
     <button class="back-btn" onclick="showHome()" id="backBtn">← VOLVER</button>
-    <div class="ad-mid"><span class="ad-tag">📢 Google AdSense — Banner</span></div>
+    <div class="ad-mid" style="height:90px;border:none;background:var(--surface);padding:0;" id="adArtTop"></div>
     <div class="art-full" id="artFull"></div>
-    <div class="ad-mid"><span class="ad-tag">📢 Google AdSense — Banner</span></div>
+    <div class="ad-mid" style="height:90px;border:none;background:var(--surface);padding:0;" id="adArtBot"></div>
   </div>
 </div>
 
@@ -399,9 +418,7 @@ function renderWithFilter() {
     <div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">${midHTML}</div>
     <div style="display:flex;flex-direction:column;background:var(--bg)">
       ${sideHTML}
-      <div style="flex:1;min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;border:1px dashed #2a2a2a;margin:16px;">
-        <span class="ad-tag">📢 AdSense 300×250</span>
-      </div>
+      <div id="adHeroSidebar" style="margin:16px;min-height:80px;"></div>
     </div>`;
 
   const cardArts = filtered.slice(5, 8);
@@ -434,6 +451,96 @@ function renderWithFilter() {
     </div>`).join('');
 }
 
+
+// ─── SIMULATED AD ENGINE ─────────────────────────────
+// Reemplaza estas funciones con tu código de Google AdSense cuando sea aprobado
+
+const SIM_ADS = {
+  rect: [
+    { bg:'linear-gradient(135deg,#0d1b3e,#1a5276)', emoji:'🚀', brand:'MASTERCARD', title:'Tu dinero viaja más lejos. Tarjeta sin comisiones internacionales.', cta:'SOLICITAR' },
+    { bg:'linear-gradient(135deg,#1a3a1a,#196f3d)', emoji:'🌿', brand:'NATURA', title:'Belleza sostenible. Cosmética natural certificada.', cta:'EXPLORAR' },
+    { bg:'linear-gradient(135deg,#3d1a00,#884ea0)', emoji:'📱', brand:'SAMSUNG', title:'Galaxy S26. La cámara que redefine lo posible.', cta:'VER MÁS' },
+    { bg:'linear-gradient(135deg,#1a0d3e,#1abc9c)', emoji:'📊', brand:'BBVA', title:'Invierte desde $500 MXN. Tu dinero trabajando para ti.', cta:'EMPEZAR' },
+    { bg:'linear-gradient(135deg,#2c0d0d,#c0392b)', emoji:'🎬', brand:'NETFLIX', title:'Historias que no puedes perderte. Primer mes gratis.', cta:'PROBAR' },
+  ],
+  banner: [
+    { emoji:'✈️', brand:'AEROMEXICO', title:'CDMX → Miami desde $3,299', sub:'Vuelos directos todos los días. Reserva antes del viernes.', cta:'RESERVAR' },
+    { emoji:'💻', brand:'APPLE', title:'MacBook Pro M4. Potencia sin límites.', sub:'Financiamiento a 18 MSI sin intereses en Liverpool.', cta:'CONOCER' },
+    { emoji:'🎓', brand:'COURSERA', title:'Aprende IA en 8 semanas. Certifícate con Google.', sub:'Más de 7 millones de estudiantes en 190 países.', cta:'INSCRIBIRSE' },
+    { emoji:'🏠', brand:'LAMUDI', title:'Tu depto ideal en CDMX desde $1.2M', sub:'Miles de propiedades. Asesoría sin costo.', cta:'BUSCAR' },
+    { emoji:'🛒', brand:'MERCADO LIBRE', title:'Hasta 40% OFF en Tecnología esta semana', sub:'Envío gratis en miles de productos con Mercado Puntos.', cta:'VER OFERTA' },
+  ],
+  leader: [
+    { emoji:'📦', brand:'AMAZON', title:'Prime: entrega en 1 día + Prime Video', sub:'Prueba 30 días gratis', cta:'ACTIVAR' },
+    { emoji:'🏦', brand:'NU BANK', title:'Tarjeta sin anualidad. Sin letras chicas.', sub:'Solicítala en 5 minutos', cta:'PEDIR' },
+    { emoji:'📡', brand:'TELMEX', title:'Internet fibra óptica 600 Mbps', sub:'Instalación gratis este mes', cta:'CONTRATAR' },
+  ]
+};
+
+function randAd(type) {
+  const arr = SIM_ADS[type];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function renderRectAd(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const ad = randAd('rect');
+  el.style.cssText = 'height:250px;margin-bottom:20px;position:relative;overflow:hidden;cursor:pointer;border-radius:2px;';
+  el.innerHTML = `
+    <div style="position:absolute;inset:0;background:${ad.bg}"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 50%,rgba(0,0,0,.1))"></div>
+    <div style="position:absolute;top:8px;right:10px;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.12em;color:rgba(255,255,255,.3)">PUBLICIDAD</div>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:52px;opacity:.15">${ad.emoji}</div>
+    <div style="position:relative;z-index:1;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;height:100%;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px">${ad.brand}</div>
+      <div style="font-family:'Lora',serif;font-size:15px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:12px">${ad.title}</div>
+      <div style="display:inline-block;background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.15em;font-weight:700;padding:7px 14px;align-self:flex-start">${ad.cta}</div>
+    </div>`;
+}
+
+function renderBannerAd(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const ad = randAd('banner');
+  el.style.cssText = 'height:90px;display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);overflow:hidden;cursor:pointer;margin:32px 0;position:relative;';
+  el.innerHTML = `
+    <div style="position:absolute;top:4px;right:8px;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.1em;color:#333">PUBLICIDAD</div>
+    <div style="width:90px;height:90px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px;background:var(--surface2)">${ad.emoji}</div>
+    <div style="flex:1;padding:0 20px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:3px">${ad.brand}</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px">${ad.title}</div>
+      <div style="font-size:11px;color:var(--muted)">${ad.sub}</div>
+    </div>
+    <div style="flex-shrink:0;margin-right:20px;background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;font-weight:700;padding:11px 18px;white-space:nowrap">${ad.cta}</div>`;
+}
+
+function renderLeaderAd(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const ad = randAd('leader');
+  el.style.cssText = 'display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);overflow:hidden;cursor:pointer;width:468px;height:60px;position:relative;flex-shrink:0;';
+  el.innerHTML = `
+    <div style="position:absolute;top:3px;right:7px;font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:.1em;color:#333">PUBLICIDAD</div>
+    <div style="width:60px;height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--surface2)">${ad.emoji}</div>
+    <div style="flex:1;padding:0 12px;">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px">${ad.brand} — ${ad.title}</div>
+      <div style="font-size:11px;color:var(--muted)">${ad.sub}</div>
+    </div>
+    <div style="flex-shrink:0;margin-right:10px;background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;font-weight:700;padding:6px 12px;white-space:nowrap">${ad.cta}</div>`;
+}
+
+function initAds() {
+  renderLeaderAd('adLeader');
+  renderBannerAd('adMid1');
+  renderRectAd('adRect1');
+  renderBannerAd('adArtTop');
+  renderBannerAd('adArtBot');
+  // Sidebar rect in hero grid (rendered dynamically)
+  setTimeout(() => renderRectAd('adHeroSidebar'), 100);
+}
+
+// ─────────────────────────────────────────────────────
 // ─── FETCH ARTICLES ──────────────────────────────────
 async function loadArticles() {
   try {
@@ -448,6 +555,7 @@ async function loadArticles() {
     }
 
     renderPage();
+    initAds();
   } catch(e) {
     console.error('Error cargando artículos:', e);
     showEmpty();
