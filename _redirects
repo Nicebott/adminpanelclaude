@@ -1,0 +1,9 @@
+# Cualquier ruta que no sea un archivo real → articulo.html
+# Esto permite URLs limpias tipo /bitcoin-120k-2026
+
+# Rutas internas que NO deben redirigir
+/articulos/*  /articulos/:splat  200
+/netlify/*    /netlify/:splat    200
+
+# Todo lo demás que no sea un archivo conocido → articulo.html
+/*            /articulo.html     200

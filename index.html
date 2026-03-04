@@ -420,7 +420,7 @@ function renderPage() {
   if (big) {
     const catName = s.catNames[big.cat] || big.cat.toUpperCase();
     document.getElementById('heroGrid').innerHTML = `
-      <div class="hero-cell big fade-in" onclick="openArticle('${big.id}')">
+      <div class="hero-cell big fade-in" onclick="location.href='/${big.id}')">
         <div class="art-img"><div class="art-img-inner ${big.gradient||'g1'}"></div><div class="art-img-label">${catName}</div></div>
         <div class="article-cat cat-${big.cat}">${catName}</div>
         <div class="article-title big">${big[lang].title}</div>
@@ -429,7 +429,7 @@ function renderPage() {
       </div>
       <div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">
         ${[med1,med2].filter(Boolean).map(a=>`
-          <div class="hero-cell med fade-in" onclick="openArticle('${a.id}')">
+          <div class="hero-cell med fade-in" onclick="location.href='/${a.id}')">
             <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat}</div>
             <div class="article-title med">${a[lang].title}</div>
             <div class="article-excerpt" style="font-size:12px">${a[lang].excerpt}</div>
@@ -439,7 +439,7 @@ function renderPage() {
       </div>
       <div style="display:flex;flex-direction:column;background:var(--bg)">
         ${side.map(a=>`
-          <div class="sidebar-art fade-in" onclick="openArticle('${a.id}')">
+          <div class="sidebar-art fade-in" onclick="location.href='/${a.id}')">
             <div class="article-cat cat-${a.cat}" style="margin-bottom:5px">${s.catNames[a.cat]||a.cat}</div>
             <div class="article-title sml">${a[lang].title}</div>
             <div class="article-meta" style="margin-top:5px">${a.readMin}${s.readMin}</div>
@@ -454,7 +454,7 @@ function renderPage() {
   const cardArts = ARTICLES.slice(5, 8);
   document.getElementById('cardGrid').innerHTML = cardArts.length
     ? cardArts.map((a,i)=>`
-        <div class="card fade-in" onclick="openArticle('${a.id}')">
+        <div class="card fade-in" onclick="location.href='/${a.id}')">
           <div class="card-num">0${i+1}</div>
           <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat}</div>
           <div class="article-title">${a[lang].title}</div>
@@ -466,7 +466,7 @@ function renderPage() {
   const recent = ARTICLES.slice(8);
   document.getElementById('opinionList').innerHTML = recent.length
     ? recent.map((a,i)=>`
-        <div class="opinion-item" onclick="openArticle('${a.id}')">
+        <div class="opinion-item" onclick="location.href='/${a.id}')">
           <div class="opinion-num">0${i+1}</div>
           <div>
             <div class="article-title">${a[lang].title}</div>
@@ -477,7 +477,7 @@ function renderPage() {
 
   // TRENDING (top 5)
   document.getElementById('trendList').innerHTML = ARTICLES.slice(0,5).map((a,i)=>`
-    <div class="trend-item" onclick="openArticle('${a.id}')">
+    <div class="trend-item" onclick="location.href='/${a.id}')">
       <div class="trend-n">${i+1}</div>
       <div class="trend-t">${a[lang].title}</div>
     </div>`).join('');

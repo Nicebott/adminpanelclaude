@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VÉRTICE</title>
+<meta name="description" content="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:wght@400;600;700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0e0e;--surface:#161616;--surface2:#1f1f1f;--border:#2a2a2a;--text:#e8e4dc;--muted:#6b6760;--accent:#e8c547;--accent2:#4a9eff;--red:#e85447;--green:#47e8a0;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:36px;}
+.topbar-date{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;}
+.lang-toggle{display:flex;gap:4px;}
+.lang-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;padding:3px 10px;cursor:pointer;transition:all .2s;}
+.lang-btn.on{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600;}
+header{padding:20px 24px 0;border-bottom:1px solid var(--border);}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;letter-spacing:4px;color:var(--text);text-decoration:none;}
+.logo-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--muted);margin-bottom:6px;}
+.main-nav{max-width:1200px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;}
+.main-nav a{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:10px 16px;border-right:1px solid var(--border);white-space:nowrap;transition:color .2s;}
+.main-nav a:hover{color:var(--accent);}
+.container{max-width:1200px;margin:0 auto;padding:32px 24px;}
+.back-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;padding:8px 16px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;margin-bottom:28px;}
+.back-btn:hover{border-color:var(--accent);color:var(--accent);}
+.ad-mid{background:var(--surface2);border:1px dashed #2a2a2a;height:90px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;margin:28px 0;}
+.ad-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;color:#333;text-transform:uppercase;}
+.art-full{max-width:720px;margin:0 auto;}
+.art-img{width:100%;aspect-ratio:21/9;margin-bottom:28px;position:relative;overflow:hidden;}
+.art-img-inner{width:100%;height:100%;}
+.art-img-label{position:absolute;bottom:8px;left:8px;background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.15em;padding:3px 8px;}
+.art-full-cat{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;}
+.cat-tech{color:var(--accent2);}
+.cat-world{color:var(--green);}
+.cat-biz{color:var(--accent);}
+.cat-sci{color:#c47eff;}
+.cat-pol{color:var(--red);}
+.cat-sport{color:#ff9d4a;}
+.cat-cult{color:#ff6eb0;}
+.art-full-title{font-family:'Lora',serif;font-size:34px;font-weight:700;line-height:1.2;margin-bottom:14px;}
+.art-full-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:24px;display:flex;gap:16px;flex-wrap:wrap;padding-bottom:24px;border-bottom:1px solid var(--border);}
+.art-full-body{font-family:'Lora',serif;font-size:17px;line-height:1.85;color:#ccc;}
+.art-full-body p{margin-bottom:20px;}
+.loading{display:flex;align-items:center;justify-content:center;height:400px;flex-direction:column;gap:16px;}
+.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--muted);}
+.error-box{text-align:center;padding:80px 24px;color:var(--muted);}
+.error-box h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;margin-bottom:10px;color:var(--text);}
+.g1{background:linear-gradient(135deg,#0d1b3e,#1a4480)}
+.g2{background:linear-gradient(135deg,#1a0d3e,#4a1a80)}
+.g3{background:linear-gradient(135deg,#3e1a0d,#801a1a)}
+.g4{background:linear-gradient(135deg,#0d3e1a,#1a8040)}
+.g5{background:linear-gradient(135deg,#3e350d,#806a1a)}
+.g6{background:linear-gradient(135deg,#0d3e3e,#1a8080)}
+/* Related */
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:8px;}
+.rel-card{background:var(--bg);padding:18px;cursor:pointer;transition:background .2s;text-decoration:none;display:block;}
+.rel-card:hover{background:var(--surface);}
+.rel-cat{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;}
+.rel-title{font-family:'Lora',serif;font-size:14px;font-weight:700;line-height:1.3;color:var(--text);transition:color .2s;}
+.rel-card:hover .rel-title{color:var(--accent);}
+.section-row{display:flex;align-items:center;gap:14px;margin:40px 0 16px;}
+.section-row h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;white-space:nowrap;}
+.section-row .rule{flex:1;height:1px;background:var(--border);}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:32px 24px 20px;margin-top:60px;}
+footer .inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#333;letter-spacing:.08em;}
+@media(max-width:700px){.art-full-title{font-size:24px;}.art-full-body{font-size:15px;}.related-grid{grid-template-columns:1fr;}.logo{font-size:36px;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-date" id="dateStr"></span>
+  <div class="lang-toggle">
+    <button class="lang-btn on" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo-sub" id="logoSub">NOTICIAS INDEPENDIENTES</div>
+      <a href="/" class="logo">VÉRTICE</a>
+    </div>
+  </div>
+  <nav class="main-nav" id="mainNav"></nav>
+</header>
+
+<div class="container">
+  <a href="/" class="back-btn" id="backBtn">← INICIO</a>
+
+  <div class="ad-mid">
+    <span class="ad-tag">📢 Google AdSense — Banner 970×90</span>
+  </div>
+
+  <div id="articleContent">
+    <div class="loading">
+      <div class="spinner"></div>
+      <span class="loading-text" id="loadingText">CARGANDO...</span>
+    </div>
+  </div>
+
+  <div class="ad-mid">
+    <span class="ad-tag">📢 Google AdSense — Banner 970×90</span>
+  </div>
+
+  <!-- RELATED -->
+  <div id="relatedSection" style="display:none">
+    <div class="section-row">
+      <h2 id="relatedTitle">MÁS ARTÍCULOS</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="related-grid" id="relatedGrid"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="inner">
+    <span id="footerCopy">© 2026 VÉRTICE Media</span>
+    <span id="footerLinks">Privacidad · Términos · Publicidad</span>
+  </div>
+</footer>
+
+<script>
+const STR = {
+  es:{ logoSub:'NOTICIAS INDEPENDIENTES', nav:['← Inicio','Mundo','Tecnología','Economía','Ciencia','Deportes','Cultura'], backBtn:'← INICIO', loading:'CARGANDO...', relatedTitle:'MÁS ARTÍCULOS', footerCopy:'© 2026 VÉRTICE Media', footerLinks:'Privacidad · Términos · Publicidad', catNames:{tech:'TECNOLOGÍA',world:'MUNDO',biz:'ECONOMÍA',sci:'CIENCIA',sport:'DEPORTES',pol:'POLÍTICA',cult:'CULTURA'}, readMin:' min de lectura', by:'Por ' },
+  en:{ logoSub:'INDEPENDENT NEWS', nav:['← Home','World','Tech','Economy','Science','Sports','Culture'], backBtn:'← HOME', loading:'LOADING...', relatedTitle:'MORE ARTICLES', footerCopy:'© 2026 VÉRTICE Media', footerLinks:'Privacy · Terms · Advertise', catNames:{tech:'TECHNOLOGY',world:'WORLD',biz:'ECONOMY',sci:'SCIENCE',sport:'SPORTS',pol:'POLITICS',cult:'CULTURE'}, readMin:' min read', by:'By ' }
+};
+
+let lang = 'es';
+let allArticles = [];
+
+// Get article ID from URL path — e.g. /bitcoin-120k-2026 → bitcoin-120k-2026
+function getArticleId() {
+  const path = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+  return path || null;
+}
+
+async function init() {
+  const s = STR[lang];
+
+  // Date
+  document.getElementById('dateStr').textContent =
+    new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  // Nav
+  document.getElementById('mainNav').innerHTML = s.nav.map((n,i)=>
+    `<a href="${i===0?'/':'#'}">${n}</a>`).join('');
+
+  const articleId = getArticleId();
+  if (!articleId) {
+    window.location.href = '/';
+    return;
+  }
+
+  try {
+    // Load index for related articles
+    const idxRes = await fetch('/articulos/index.json');
+    if (idxRes.ok) allArticles = await idxRes.json();
+
+    // Load full article
+    const meta = allArticles.find(a => a.id === articleId);
+    const filename = meta ? meta.filename : articleId + '.json';
+    const res = await fetch('/articulos/' + filename);
+
+    if (!res.ok) throw new Error('Artículo no encontrado');
+    const art = await res.json();
+
+    renderArticle(art);
+    renderRelated(articleId);
+
+  } catch(e) {
+    document.getElementById('articleContent').innerHTML = `
+      <div class="error-box">
+        <h3>ARTÍCULO NO ENCONTRADO</h3>
+        <p>El artículo que buscas no existe o fue eliminado.</p>
+      </div>`;
+  }
+}
+
+function renderArticle(art) {
+  const s = STR[lang];
+  const catName = s.catNames[art.cat] || art.cat.toUpperCase();
+  const bodyHtml = art[lang].body
+    ? art[lang].body.split('\n\n').map(p=>`<p>${p}</p>`).join('')
+    : '<p>Contenido próximamente.</p>';
+
+  // Update page title & meta
+  document.title = art[lang].title + ' — VÉRTICE';
+  document.querySelector('meta[name="description"]').setAttribute('content', art[lang].excerpt);
+
+  document.getElementById('articleContent').innerHTML = `
+    <div class="art-full">
+      <div class="art-img">
+        <div class="art-img-inner ${art.gradient||'g1'}"></div>
+        <div class="art-img-label">${catName}</div>
+      </div>
+      <div class="art-full-cat cat-${art.cat}">${catName}</div>
+      <div class="art-full-title">${art[lang].title}</div>
+      <div class="art-full-meta">
+        ${art.author?`<span>${s.by}${art.author}</span><span>·</span>`:''}
+        ${art.readMin?`<span>${art.readMin}${s.readMin}</span><span>·</span>`:''}
+        ${art.date?`<span>${art.date}</span>`:''}
+      </div>
+      <div class="art-full-body">${bodyHtml}</div>
+    </div>`;
+}
+
+function renderRelated(currentId) {
+  const s = STR[lang];
+  const related = allArticles.filter(a => a.id !== currentId).slice(0, 3);
+  if (!related.length) return;
+
+  document.getElementById('relatedTitle').textContent = s.relatedTitle;
+  document.getElementById('relatedGrid').innerHTML = related.map(a=>`
+    <a href="/${a.id}" class="rel-card">
+      <div class="rel-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat}</div>
+      <div class="rel-title">${a[lang].title}</div>
+    </a>`).join('');
+
+  document.getElementById('relatedSection').style.display = 'block';
+}
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('on', b.textContent===l.toUpperCase()));
+  init();
+}
+
+init();
+</script>
+</body>
+</html>
