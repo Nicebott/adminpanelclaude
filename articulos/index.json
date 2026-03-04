@@ -1,36 +1,19 @@
 [
   {
-    "id": "peso-mexicano-2026",
+    "id": "bitcoin-120k-2026",
     "cat": "biz",
-    "date": "2026-03-03",
-    "author": "Ana Torres",
-    "readMin": 3,
+    "date": "2026-03-05",
+    "author": "Carlos Mendoza",
+    "readMin": 4,
     "gradient": "g5",
-    "filename": "peso-mexicano-2026.json",
+    "filename": "2026-03-05-bitcoin-120k.json",
     "es": {
-      "title": "El peso mexicano alcanza su nivel más fuerte frente al dólar en dos décadas",
-      "excerpt": "La moneda mexicana tocó los 15.20 pesos por dólar impulsada por el boom del nearshoring."
+      "title": "Bitcoin supera los $120,000 por primera vez: qué está impulsando el rally histórico",
+      "excerpt": "La criptomoneda más grande del mundo alcanzó un nuevo máximo histórico impulsada por la aprobación de ETFs institucionales en Europa y Asia."
     },
     "en": {
-      "title": "Mexican peso hits strongest level against the dollar in two decades",
-      "excerpt": "The Mexican currency touched 15.20 pesos per dollar driven by the nearshoring boom."
-    }
-  },
-  {
-    "id": "ia-ranking-2026",
-    "cat": "tech",
-    "date": "2026-03-04",
-    "author": "Redacción VÉRTICE",
-    "readMin": 5,
-    "gradient": "g2",
-    "filename": "ia-ranking-2026.json",
-    "es": {
-      "title": "Las 10 mejores inteligencias artificiales de 2026: el ranking definitivo",
-      "excerpt": "Gemini, Claude y GPT-5 lideran una carrera donde ya no hay un solo ganador sino especialistas en cada área."
-    },
-    "en": {
-      "title": "The 10 best artificial intelligences of 2026: the definitive ranking",
-      "excerpt": "Gemini, Claude and GPT-5 lead a race where there is no longer a single winner but specialists in each area."
+      "title": "Bitcoin surpasses $120,000 for the first time: what's driving the historic rally",
+      "excerpt": "The world's largest cryptocurrency reached a new all-time high driven by approval of institutional ETFs in Europe and Asia."
     }
   },
   {
@@ -51,20 +34,20 @@
     }
   },
   {
-    "id": "bitcoin-120k-2026",
-    "cat": "biz",
-    "date": "2026-03-05",
-    "author": "Carlos Mendoza",
-    "readMin": 4,
-    "gradient": "g5",
-    "filename": "2026-03-05-bitcoin-120k.json",
+    "id": "crisis-agua-global-2026",
+    "cat": "world",
+    "date": "2026-03-04",
+    "author": "Laura Sánchez",
+    "readMin": 5,
+    "gradient": "g4",
+    "filename": "2026-03-04-crisis-agua-global.json",
     "es": {
-      "title": "Bitcoin supera los $120,000 por primera vez: qué está impulsando el rally histórico",
-      "excerpt": "La criptomoneda más grande del mundo alcanzó un nuevo máximo histórico impulsada por la aprobación de ETFs institucionales en Europa y Asia."
+      "title": "La crisis del agua: 3,000 millones de personas vivirán con escasez severa antes de 2030",
+      "excerpt": "Un informe del Banco Mundial advierte que la demanda global de agua superará la oferta disponible en un 40% en menos de cuatro años si no se toman medidas urgentes."
     },
     "en": {
-      "title": "Bitcoin surpasses $120,000 for the first time: what's driving the historic rally",
-      "excerpt": "The world's largest cryptocurrency reached a new all-time high driven by approval of institutional ETFs in Europe and Asia."
+      "title": "The water crisis: 3 billion people will face severe scarcity before 2030",
+      "excerpt": "A World Bank report warns that global water demand will exceed available supply by 40% in less than four years without urgent action."
     }
   },
   {
@@ -85,20 +68,20 @@
     }
   },
   {
-    "id": "crisis-agua-global-2026",
-    "cat": "world",
+    "id": "ia-ranking-2026",
+    "cat": "tech",
     "date": "2026-03-04",
-    "author": "Laura Sánchez",
+    "author": "Redacción VÉRTICE",
     "readMin": 5,
-    "gradient": "g4",
-    "filename": "2026-03-04-crisis-agua-global.json",
+    "gradient": "g2",
+    "filename": "ia-ranking-2026.json",
     "es": {
-      "title": "La crisis del agua: 3,000 millones de personas vivirán con escasez severa antes de 2030",
-      "excerpt": "Un informe del Banco Mundial advierte que la demanda global de agua superará la oferta disponible en un 40% en menos de cuatro años si no se toman medidas urgentes."
+      "title": "Las 10 mejores inteligencias artificiales de 2026: el ranking definitivo",
+      "excerpt": "Gemini, Claude y GPT-5 lideran una carrera donde ya no hay un solo ganador sino especialistas en cada área."
     },
     "en": {
-      "title": "The water crisis: 3 billion people will face severe scarcity before 2030",
-      "excerpt": "A World Bank report warns that global water demand will exceed available supply by 40% in less than four years without urgent action."
+      "title": "The 10 best artificial intelligences of 2026: the definitive ranking",
+      "excerpt": "Gemini, Claude and GPT-5 lead a race where there is no longer a single winner but specialists in each area."
     }
   },
   {
@@ -116,6 +99,23 @@
     "en": {
       "title": "Netflix enters the AAA video game market, threatening PlayStation and Xbox with its 300 million subscribers",
       "excerpt": "The platform launched its cloud gaming service with exclusive titles developed by in-house studios, betting on the subscription model that already revolutionized film and music."
+    }
+  },
+  {
+    "id": "peso-mexicano-2026",
+    "cat": "biz",
+    "date": "2026-03-03",
+    "author": "Ana Torres",
+    "readMin": 3,
+    "gradient": "g5",
+    "filename": "peso-mexicano-2026.json",
+    "es": {
+      "title": "El peso mexicano alcanza su nivel más fuerte frente al dólar en dos décadas",
+      "excerpt": "La moneda mexicana tocó los 15.20 pesos por dólar impulsada por el boom del nearshoring."
+    },
+    "en": {
+      "title": "Mexican peso hits strongest level against the dollar in two decades",
+      "excerpt": "The Mexican currency touched 15.20 pesos per dollar driven by the nearshoring boom."
     }
   }
 ]
