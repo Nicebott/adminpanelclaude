@@ -21,7 +21,7 @@ vertice-site/
 
 ### 2. Configura tu API Key de Anthropic
 - En Netlify → Site settings → Environment variables
-- Agrega: `ANTHROPIC_API_KEY` = tu clave de https://console.anthropic.com
+- Agrega: `GEMINI_API_KEY` = tu clave de https://aistudio.google.com
 - Haz redeploy del sitio
 
 ### 3. Listo

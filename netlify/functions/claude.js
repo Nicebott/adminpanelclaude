@@ -15,33 +15,38 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return {
       statusCode: 500,
       headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: 'API key no configurada en Netlify' }),
+      body: JSON.stringify({ error: 'GEMINI_API_KEY no configurada en Netlify' }),
     };
   }
 
   try {
     const body = JSON.parse(event.body);
+    const prompt = body.messages[0].content;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        messages: body.messages,
-      }),
-    });
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 2000, temperature: 0.7 },
+        }),
+      }
+    );
 
     const data = await response.json();
+
+    // Normalize response to match format admin.html expects
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const normalized = {
+      content: [{ type: 'text', text }]
+    };
 
     return {
       statusCode: 200,
@@ -49,7 +54,7 @@ exports.handler = async (event) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(normalized),
     };
   } catch (err) {
     return {
