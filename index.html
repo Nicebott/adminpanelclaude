@@ -31,7 +31,7 @@ body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-ser
 
 /* HEADER */
 header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
-.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid var(--border);gap:16px;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:68px;line-height:1;letter-spacing:4px;color:var(--text);text-decoration:none;position:relative;cursor:pointer;}
 .logo::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
 .logo-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--muted);margin-bottom:10px;text-transform:uppercase;}
@@ -312,7 +312,7 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
       <div class="logo-sub" id="logoSub">NOTICIAS INDEPENDIENTES</div>
       <div class="logo" onclick="showHome()">VÉRTICE</div>
     </div>
-    <div class="ad-leader" style="background:var(--surface);border:1px solid var(--border);width:468px;height:60px;overflow:hidden;cursor:pointer;" id="adLeader"></div>
+    <div class="ad-leader" style="background:var(--surface);border:1px solid var(--border);height:60px;overflow:hidden;cursor:pointer;flex-shrink:0;" id="adLeader"></div>
   </div>
   <nav class="main-nav" id="mainNav"></nav>
 </header>
@@ -637,28 +637,39 @@ function renderBannerAd(containerId) {
   const el = document.getElementById(containerId);
   if (!el) return;
   const ad = randAd('banner');
-  el.style.cssText = 'height:90px;display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);overflow:hidden;cursor:pointer;margin:32px 0;position:relative;';
+  const isMobile = window.innerWidth < 640;
+  const h = isMobile ? 72 : 90;
+  const iconSize = isMobile ? 72 : 90;
+  const fontSize = isMobile ? 28 : 36;
+  const titleSize = isMobile ? '13px' : '15px';
+  const pad = isMobile ? '0 12px' : '0 20px';
+  const ctaPad = isMobile ? '8px 12px' : '11px 18px';
+  const ctaSize = isMobile ? '10px' : '11px';
+  const ctaMargin = isMobile ? '12px' : '20px';
+  el.style.cssText = 'width:100%;box-sizing:border-box;height:'+h+'px;display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);overflow:hidden;cursor:pointer;margin:20px 0;position:relative;';
   el.innerHTML = `
     <div style="position:absolute;top:4px;right:8px;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.1em;color:#333">PUBLICIDAD</div>
-    <div style="width:90px;height:90px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px;background:var(--surface2)">${ad.emoji}</div>
-    <div style="flex:1;padding:0 20px;">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:3px">${ad.brand}</div>
-      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px">${ad.title}</div>
-      <div style="font-size:11px;color:var(--muted)">${ad.sub}</div>
+    <div style="width:${iconSize}px;height:${h}px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:${fontSize}px;background:var(--surface2)">${ad.emoji}</div>
+    <div style="flex:1;padding:${pad};min-width:0;overflow:hidden;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:2px">${ad.brand}</div>
+      <div style="font-size:${titleSize};font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ad.title}</div>
+      ${isMobile ? '' : `<div style="font-size:11px;color:var(--muted);margin-top:2px">${ad.sub}</div>`}
     </div>
-    <div style="flex-shrink:0;margin-right:20px;background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;font-weight:700;padding:11px 18px;white-space:nowrap">${ad.cta}</div>`;
+    <div style="flex-shrink:0;margin-right:${ctaMargin};background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:${ctaSize};letter-spacing:.1em;font-weight:700;padding:${ctaPad};white-space:nowrap">${ad.cta}</div>`;
 }
 
 function renderLeaderAd(containerId) {
   const el = document.getElementById(containerId);
   if (!el) return;
   const ad = randAd('leader');
-  el.style.cssText = 'display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);overflow:hidden;cursor:pointer;width:468px;height:60px;position:relative;flex-shrink:0;';
+  // On mobile, hide leader ad entirely — use banner instead
+  if (window.innerWidth < 640) { el.style.display = 'none'; return; }
+  el.style.cssText = 'display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);overflow:hidden;cursor:pointer;width:100%;max-width:468px;height:60px;position:relative;flex-shrink:0;';
   el.innerHTML = `
     <div style="position:absolute;top:3px;right:7px;font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:.1em;color:#333">PUBLICIDAD</div>
     <div style="width:60px;height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--surface2)">${ad.emoji}</div>
-    <div style="flex:1;padding:0 12px;">
-      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px">${ad.brand} — ${ad.title}</div>
+    <div style="flex:1;padding:0 12px;min-width:0;">
+      <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${ad.brand} — ${ad.title}</div>
       <div style="font-size:11px;color:var(--muted)">${ad.sub}</div>
     </div>
     <div style="flex-shrink:0;margin-right:10px;background:var(--accent);color:#000;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;font-weight:700;padding:6px 12px;white-space:nowrap">${ad.cta}</div>`;
