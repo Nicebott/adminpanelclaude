@@ -485,12 +485,23 @@ Responde ÚNICAMENTE con un objeto JSON válido con esta estructura exacta (sin 
         messages:[{role:'user',content:prompt}]
       })
     });
+
     const data = await res.json();
+
+    if (!res.ok || data.error) {
+      throw new Error(data.error || 'HTTP ' + res.status + ': ' + res.statusText);
+    }
+
     const raw = data.content?.map(c=>c.text||'').join('') || '';
-    
-    // Parse JSON — strip any markdown fences
+    if (!raw) throw new Error('Gemini devolvió respuesta vacía');
+
     const clean = raw.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
+    let parsed;
+    try {
+      parsed = JSON.parse(clean);
+    } catch(jsonErr) {
+      throw new Error('JSON inválido: ' + raw.slice(0,120));
+    }
 
     generatedArticle = {
       id: ARTICLES.length + 101,
@@ -507,13 +518,14 @@ Responde ÚNICAMENTE con un objeto JSON válido con esta estructura exacta (sin 
     showResult();
     notify('✦','¡Artículo generado con éxito!');
   } catch(e) {
-    console.error(e);
-    notify('⚠️','Error al generar. Verifica tu conexión.');
+    console.error('ERROR:', e);
+    document.getElementById('genStatus').style.color = '#e85447';
+    document.getElementById('genStatus').textContent = '❌ Error: ' + e.message;
+    notify('⚠️', e.message.slice(0, 80));
   } finally {
     btn.disabled = false;
     icon.textContent = '✦';
     txt.textContent = 'GENERAR ARTÍCULO';
-    status.textContent = '';
   }
 }
 
