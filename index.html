@@ -81,7 +81,7 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
 .container{max-width:1200px;margin:0 auto;padding:32px 24px;}
 
 /* HERO GRID */
-.hero-grid{display:grid;grid-template-columns:1fr 1fr 300px;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:40px;}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr 300px;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:40px;overflow:hidden;}
 .hero-cell{background:var(--bg);padding:24px;cursor:pointer;transition:background .2s;}
 .hero-cell:hover{background:var(--surface);}
 .hero-cell.big{grid-row:span 2;padding:32px;}
@@ -123,7 +123,7 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
 .section-row .more{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--accent);text-decoration:none;}
 
 /* CARD GRID */
-.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:40px;}
+.card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:40px;min-height:0;}
 .card{background:var(--bg);padding:20px;cursor:pointer;transition:background .2s;}
 .card:hover{background:var(--surface);}
 .card:hover .article-title{color:var(--accent);}
@@ -245,7 +245,7 @@ header{padding:24px 24px 0;border-bottom:1px solid var(--border);}
     <div id="mainContent" style="display:none">
       <div class="hero-grid" id="heroGrid"></div>
 
-      <div class="section-row">
+      <div class="section-row" id="secMoreRow">
         <h2 id="secMore">MÁS NOTICIAS</h2>
         <div class="rule"></div>
         <a href="#" class="more" id="secMoreLink">Ver todo →</a>
@@ -390,47 +390,95 @@ function renderWithFilter() {
   const med2 = filtered[2];
   const side = filtered.slice(3, 5);
   const catName = s.catNames[big.cat] || big.cat.toUpperCase();
+  const total = filtered.length;
 
-  const midHTML = [med1, med2].map(a => a ? `
-    <div class="hero-cell med fade-in" onclick="location.href='/${a.id}'">
-      <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat.toUpperCase()}</div>
-      <div class="article-title med">${a[lang].title}</div>
-      <div class="article-excerpt" style="font-size:12px">${a[lang].excerpt}</div>
-      <div class="article-meta">${a.readMin}${s.readMin}</div>
-    </div>` : `<div class="hero-cell med" style="background:var(--surface2);flex:1"></div>`
-  ).join('');
+  // Adapt grid columns based on how many articles exist
+  // 1 article: just big (1 col), 2: big+mid (2 col), 3+: full 3 col
+  const heroEl = document.getElementById('heroGrid');
 
-  const sideHTML = side.map(a => `
-    <div class="sidebar-art fade-in" onclick="location.href='/${a.id}'">
-      <div class="article-cat cat-${a.cat}" style="margin-bottom:5px">${s.catNames[a.cat]||a.cat.toUpperCase()}</div>
-      <div class="article-title sml">${a[lang].title}</div>
-      <div class="article-meta" style="margin-top:5px">${a.readMin}${s.readMin}</div>
-    </div>`).join('');
+  if (total === 1) {
+    // Only hero, full width
+    heroEl.style.gridTemplateColumns = '1fr';
+    heroEl.innerHTML = `
+      <div class="hero-cell big fade-in" onclick="location.href='/${big.id}'">
+        <div class="art-img"><div class="art-img-inner ${big.gradient||'g1'}"></div><div class="art-img-label">${catName}</div></div>
+        <div class="article-cat cat-${big.cat}">${catName}</div>
+        <div class="article-title big">${big[lang].title}</div>
+        <div class="article-excerpt">${big[lang].excerpt}</div>
+        <div class="article-meta"><span>${big.author?s.by+big.author:''}</span><span>${big.readMin}${s.readMin}</span></div>
+      </div>`;
 
-  document.getElementById('heroGrid').innerHTML = `
-    <div class="hero-cell big fade-in" onclick="location.href='/${big.id}'">
-      <div class="art-img"><div class="art-img-inner ${big.gradient||'g1'}"></div><div class="art-img-label">${catName}</div></div>
-      <div class="article-cat cat-${big.cat}">${catName}</div>
-      <div class="article-title big">${big[lang].title}</div>
-      <div class="article-excerpt">${big[lang].excerpt}</div>
-      <div class="article-meta"><span>${big.author?s.by+big.author:''}</span><span>${big.readMin}${s.readMin}</span></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">${midHTML}</div>
-    <div style="display:flex;flex-direction:column;background:var(--bg)">
-      ${sideHTML}
-      <div id="adHeroSidebar" style="margin:16px;min-height:80px;"></div>
-    </div>`;
+  } else if (total === 2) {
+    // Hero + one mid, no sidebar
+    heroEl.style.gridTemplateColumns = '1fr 1fr';
+    heroEl.innerHTML = `
+      <div class="hero-cell big fade-in" onclick="location.href='/${big.id}'">
+        <div class="art-img"><div class="art-img-inner ${big.gradient||'g1'}"></div><div class="art-img-label">${catName}</div></div>
+        <div class="article-cat cat-${big.cat}">${catName}</div>
+        <div class="article-title big">${big[lang].title}</div>
+        <div class="article-excerpt">${big[lang].excerpt}</div>
+        <div class="article-meta"><span>${big.author?s.by+big.author:''}</span><span>${big.readMin}${s.readMin}</span></div>
+      </div>
+      <div class="hero-cell med fade-in" onclick="location.href='/${med1.id}'">
+        <div class="article-cat cat-${med1.cat}">${s.catNames[med1.cat]||med1.cat.toUpperCase()}</div>
+        <div class="article-title med">${med1[lang].title}</div>
+        <div class="article-excerpt" style="font-size:12px">${med1[lang].excerpt}</div>
+        <div class="article-meta">${med1.readMin}${s.readMin}</div>
+      </div>`;
+
+  } else {
+    // Full 3-column grid
+    heroEl.style.gridTemplateColumns = '1fr 1fr 300px';
+    const midHTML = [med1, med2].map(a => a ? `
+      <div class="hero-cell med fade-in" onclick="location.href='/${a.id}'">
+        <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat.toUpperCase()}</div>
+        <div class="article-title med">${a[lang].title}</div>
+        <div class="article-excerpt" style="font-size:12px">${a[lang].excerpt}</div>
+        <div class="article-meta">${a.readMin}${s.readMin}</div>
+      </div>` : ''
+    ).join('');
+
+    const sideHTML = side.map(a => `
+      <div class="sidebar-art fade-in" onclick="location.href='/${a.id}'">
+        <div class="article-cat cat-${a.cat}" style="margin-bottom:5px">${s.catNames[a.cat]||a.cat.toUpperCase()}</div>
+        <div class="article-title sml">${a[lang].title}</div>
+        <div class="article-meta" style="margin-top:5px">${a.readMin}${s.readMin}</div>
+      </div>`).join('');
+
+    heroEl.innerHTML = `
+      <div class="hero-cell big fade-in" onclick="location.href='/${big.id}'">
+        <div class="art-img"><div class="art-img-inner ${big.gradient||'g1'}"></div><div class="art-img-label">${catName}</div></div>
+        <div class="article-cat cat-${big.cat}">${catName}</div>
+        <div class="article-title big">${big[lang].title}</div>
+        <div class="article-excerpt">${big[lang].excerpt}</div>
+        <div class="article-meta"><span>${big.author?s.by+big.author:''}</span><span>${big.readMin}${s.readMin}</span></div>
+      </div>
+      ${midHTML ? `<div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">${midHTML}</div>` : ''}
+      <div style="display:flex;flex-direction:column;background:var(--bg)">
+        ${sideHTML}
+        <div id="adHeroSidebar" style="margin:16px;min-height:80px;"></div>
+      </div>`;
+  }
 
   const cardArts = filtered.slice(5, 8);
-  document.getElementById('cardGrid').innerHTML = cardArts.length
-    ? cardArts.map((a,i)=>`
+  const cardGrid = document.getElementById('cardGrid');
+  if (cardArts.length === 0) {
+    cardGrid.innerHTML = '';
+    cardGrid.style.display = 'none';
+    document.getElementById('secMoreRow').style.display = 'none';
+  } else {
+    cardGrid.style.display = 'grid';
+    document.getElementById('secMoreRow').style.display = 'flex';
+    // Adjust columns to match article count — no empty gray cells
+    cardGrid.style.gridTemplateColumns = cardArts.length === 1 ? '1fr' : cardArts.length === 2 ? '1fr 1fr' : 'repeat(3,1fr)';
+    cardGrid.innerHTML = cardArts.map((a,i)=>`
         <div class="card fade-in" onclick="location.href='/${a.id}'">
           <div class="card-num">0${i+1}</div>
           <div class="article-cat cat-${a.cat}">${s.catNames[a.cat]||a.cat}</div>
           <div class="article-title">${a[lang].title}</div>
           <div class="article-meta" style="margin-top:8px">${a.readMin}${s.readMin}</div>
-        </div>`).join('')
-    : '';
+        </div>`).join('');
+  }
 
   const recent = filtered.slice(8);
   document.getElementById('opinionList').innerHTML = recent.length
