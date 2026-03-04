@@ -28,8 +28,12 @@ exports.handler = async (event) => {
     const body = JSON.parse(event.body);
     const prompt = body.messages[0].content;
 
-    // Try gemini-2.0-flash first, fallback to 1.5-flash
-    const models = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+    const models = [
+      'gemini-2.0-flash-001',
+      'gemini-2.0-flash-lite-001',
+      'gemini-1.5-flash-001',
+    ];
+
     let lastError = '';
     let text = '';
 
@@ -44,16 +48,13 @@ exports.handler = async (event) => {
             generationConfig: {
               maxOutputTokens: 2000,
               temperature: 0.7,
-              responseMimeType: 'application/json',
             },
           }),
         }
       );
 
       const data = await response.json();
-
-      console.log(`[${model}] status:`, response.status);
-      console.log(`[${model}] data:`, JSON.stringify(data).slice(0, 600));
+      console.log(`[${model}] status:`, response.status, JSON.stringify(data).slice(0, 400));
 
       if (!response.ok) {
         lastError = `${model} HTTP ${response.status}: ${data?.error?.message || 'unknown'}`;
@@ -61,22 +62,15 @@ exports.handler = async (event) => {
       }
 
       const candidate = data?.candidates?.[0];
-      const finishReason = candidate?.finishReason;
-
-      if (finishReason === 'SAFETY') {
+      if (candidate?.finishReason === 'SAFETY') {
         lastError = `${model} bloqueado por seguridad`;
         continue;
       }
 
       text = candidate?.content?.parts?.[0]?.text || '';
-
-      if (!text && data?.promptFeedback?.blockReason) {
-        lastError = `${model} bloqueado: ${data.promptFeedback.blockReason}`;
-        continue;
-      }
-
       if (text) break;
-      lastError = `${model} vacio. finishReason: ${finishReason}`;
+
+      lastError = `${model} vacio. finishReason: ${candidate?.finishReason}`;
     }
 
     if (!text) {
@@ -93,9 +87,7 @@ exports.handler = async (event) => {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        content: [{ type: 'text', text }]
-      }),
+      body: JSON.stringify({ content: [{ type: 'text', text }] }),
     };
 
   } catch (err) {
