@@ -1,8 +1,10 @@
 [build]
+  command = "node netlify/functions/build-index.js"
   functions = "netlify/functions"
+  publish = "."
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
-    X-Content-Type-Options = "nosniff"
+    Access-Control-Allow-Origin = "*"
