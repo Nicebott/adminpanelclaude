@@ -3,618 +3,800 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VÉRTICE — Panel Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Lora:wght@400;600;700&display=swap" rel="stylesheet">
+<title>VÉRTICE — Noticias</title>
+<meta name="description" content="Portal de noticias independiente en español e inglés">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#0a0a0a; --surface:#111; --surface2:#181818; --surface3:#1f1f1f;
-  --border:#252525; --border2:#2f2f2f;
-  --text:#e0dbd4; --muted:#5a5650; --accent:#e8c547; --accent2:#4a9eff;
-  --red:#e85447; --green:#47e8a0;
+  --bg: #0e0e0e;
+  --surface: #161616;
+  --surface2: #1f1f1f;
+  --border: #2a2a2a;
+  --text: #e8e4dc;
+  --muted: #6b6760;
+  --accent: #e8c547;
+  --accent2: #4a9eff;
+  --red: #e85447;
+  --green: #47e8a0;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;display:flex;}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif; min-height:100vh; }
 
-/* SIDEBAR */
-.sidebar {
-  width:220px; background:var(--surface); border-right:1px solid var(--border);
-  display:flex; flex-direction:column; position:fixed; top:0; bottom:0; left:0; z-index:10;
-}
-.sidebar-logo {
-  padding:20px 18px; border-bottom:1px solid var(--border);
-  font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:4px;
-  color:var(--text);
-}
-.sidebar-logo span { color:var(--accent); font-size:11px; letter-spacing:.2em; display:block; font-family:'IBM Plex Mono',monospace; margin-top:-4px; }
-.nav-item {
-  display:flex; align-items:center; gap:10px;
-  padding:11px 18px; cursor:pointer;
-  font-size:13px; color:var(--muted);
-  border-left:2px solid transparent;
-  transition:all .2s;
-}
-.nav-item:hover { color:var(--text); background:var(--surface2); }
-.nav-item.active { color:var(--accent); border-left-color:var(--accent); background:var(--surface2); }
-.nav-icon { font-size:15px; width:20px; text-align:center; }
-.nav-section {
-  font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.2em;
-  color:var(--muted); padding:16px 18px 6px; text-transform:uppercase;
-}
-.sidebar-footer { margin-top:auto; padding:16px 18px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); }
-
-/* MAIN */
-.main { margin-left:220px; flex:1; display:flex; flex-direction:column; }
+/* LANG BAR */
 .topbar {
-  background:var(--surface); border-bottom:1px solid var(--border);
-  padding:0 28px; height:52px; display:flex; align-items:center; justify-content:space-between;
-  position:sticky; top:0; z-index:5;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  height: 36px;
 }
-.topbar h1 { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px; color:var(--text); }
-.topbar-actions { display:flex; gap:10px; align-items:center; }
-.badge { background:var(--accent); color:#000; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; padding:4px 10px; font-weight:600; }
-.badge.green { background:var(--green); }
-.badge.muted { background:var(--surface3); color:var(--muted); }
+.topbar-left { display:flex; gap:20px; align-items:center; }
+.topbar-date { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.1em; }
+.topbar-ticker { font-size:11px; color:var(--muted); overflow:hidden; max-width:500px; }
+.ticker-inner { display:inline-block; animation: tickscroll 30s linear infinite; white-space:nowrap; }
+.ticker-inner span { margin:0 28px; }
+.ticker-inner span::before { content:"▸ "; color:var(--accent); }
+@keyframes tickscroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-.content { padding:28px; flex:1; }
-
-/* TABS */
-.tabs { display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:28px; }
-.tab {
-  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em;
-  text-transform:uppercase; color:var(--muted); padding:10px 20px; cursor:pointer;
-  border-bottom:2px solid transparent; transition:all .2s;
+.lang-toggle {
+  display:flex; gap:4px;
 }
-.tab:hover { color:var(--text); }
-.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
-
-/* CARDS */
-.stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
-.stat-card {
-  background:var(--surface); border:1px solid var(--border); padding:18px;
-}
-.stat-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
-.stat-val { font-family:'Bebas Neue',sans-serif; font-size:36px; color:var(--text); line-height:1; }
-.stat-delta { font-size:11px; margin-top:4px; }
-.stat-delta.up { color:var(--green); }
-.stat-delta.dn { color:var(--red); }
-
-/* AI GENERATOR */
-.gen-panel {
-  background:var(--surface); border:1px solid var(--border); padding:24px; margin-bottom:28px;
-}
-.gen-title {
-  font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:3px;
-  margin-bottom:4px; display:flex; align-items:center; gap:10px;
-}
-.gen-title .ai-pill {
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  color:#000; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.15em;
-  padding:3px 8px; font-weight:700;
-}
-.gen-sub { font-size:12px; color:var(--muted); margin-bottom:20px; }
-
-.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
-.form-group { display:flex; flex-direction:column; gap:6px; }
-.form-group.full { grid-column:span 2; }
-.form-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--muted); text-transform:uppercase; }
-.form-input, .form-select, .form-textarea {
-  background:var(--bg); border:1px solid var(--border2); color:var(--text);
-  padding:9px 12px; font-family:'IBM Plex Sans',sans-serif; font-size:13px;
-  transition:border-color .2s;
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus {
-  outline:none; border-color:var(--accent);
-}
-.form-input::placeholder, .form-textarea::placeholder { color:#333; }
-.form-select option { background:var(--surface); }
-.form-textarea { resize:vertical; min-height:80px; }
-
-.gen-btn {
-  background:var(--accent); border:none; color:#000;
-  font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.15em; font-weight:700;
-  padding:12px 24px; cursor:pointer; transition:opacity .2s; display:flex; align-items:center; gap:8px;
-}
-.gen-btn:hover { opacity:.85; }
-.gen-btn:disabled { opacity:.4; cursor:not-allowed; }
-.gen-btn-sec {
-  background:none; border:1px solid var(--border2); color:var(--muted);
-  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em;
-  padding:10px 18px; cursor:pointer; transition:all .2s;
-}
-.gen-btn-sec:hover { border-color:var(--muted); color:var(--text); }
-
-/* LOADING */
-.loader { display:inline-block; width:14px; height:14px; border:2px solid #00000040; border-top-color:#000; border-radius:50%; animation:spin .6s linear infinite; }
-@keyframes spin { to{transform:rotate(360deg)} }
-
-/* RESULT */
-.result-box {
-  margin-top:20px; background:var(--bg); border:1px solid var(--border2);
-  display:none;
-}
-.result-box.show { display:block; }
-.result-tabs { display:flex; border-bottom:1px solid var(--border); }
-.result-tab {
-  font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em;
-  text-transform:uppercase; color:var(--muted); padding:8px 16px; cursor:pointer;
-  border-bottom:2px solid transparent; transition:all .2s;
-}
-.result-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
-.result-content { padding:20px; }
-.result-field { margin-bottom:16px; }
-.result-field-label { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.15em; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
-.result-field-val { font-family:'Lora',serif; font-size:15px; line-height:1.5; color:var(--text); }
-.result-field-val.title { font-size:19px; font-weight:700; }
-.result-field-val.body { color:#aaa; font-size:14px; line-height:1.8; }
-.result-actions { display:flex; gap:10px; padding:16px 20px; border-top:1px solid var(--border); }
-
-/* ARTICLES TABLE */
-.table-wrap { background:var(--surface); border:1px solid var(--border); }
-.table-head { padding:14px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
-.table-head h3 { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:2px; }
-table { width:100%; border-collapse:collapse; }
-th {
-  font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.18em;
-  text-transform:uppercase; color:var(--muted); padding:10px 16px;
-  border-bottom:1px solid var(--border); text-align:left; background:var(--surface2);
-}
-td { padding:12px 16px; font-size:13px; border-bottom:1px solid var(--border); }
-tr:last-child td { border-bottom:none; }
-tr:hover td { background:var(--surface2); }
-.pill {
-  display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.1em;
-  padding:2px 8px; text-transform:uppercase;
-}
-.pill-tech { background:#4a9eff20; color:var(--accent2); }
-.pill-pol { background:#e8544720; color:var(--red); }
-.pill-biz { background:#e8c54720; color:var(--accent); }
-.pill-sci { background:#c47eff20; color:#c47eff; }
-.pill-sport { background:#ff9d4a20; color:#ff9d4a; }
-.pill-world { background:#47e8a020; color:var(--green); }
-.pill-cult { background:#ff6eb020; color:#ff6eb0; }
-.act-btn {
+.lang-btn {
   background:none; border:1px solid var(--border); color:var(--muted);
-  font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.1em;
+  font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em;
   padding:3px 10px; cursor:pointer; transition:all .2s;
 }
-.act-btn:hover { border-color:var(--accent); color:var(--accent); }
+.lang-btn.on { background:var(--accent); border-color:var(--accent); color:#000; font-weight:600; }
+.lang-btn:hover:not(.on) { border-color:var(--muted); color:var(--text); }
 
-/* JSON EDITOR */
-.json-editor-wrap { background:var(--surface); border:1px solid var(--border); }
-.json-toolbar { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
-.json-editor {
-  width:100%; background:var(--bg); color:#7ec8e3;
-  font-family:'IBM Plex Mono',monospace; font-size:12px; line-height:1.7;
-  border:none; padding:20px; min-height:400px; resize:vertical;
+/* HEADER */
+header {
+  padding: 28px 24px 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
 }
-.json-editor:focus { outline:none; }
+.header-inner {
+  max-width: 1200px; margin: 0 auto;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family:'Bebas Neue',sans-serif;
+  font-size: 72px; line-height: 1;
+  letter-spacing: 4px;
+  color: var(--text);
+  text-decoration: none;
+  position: relative;
+}
+.logo::after {
+  content:'';
+  position:absolute; bottom:-4px; left:0; right:0;
+  height:4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+.logo-sub {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px; letter-spacing:.3em; color:var(--muted);
+  margin-bottom:12px;
+  text-transform:uppercase;
+}
 
-/* NOTIFICATION */
-.notif {
-  position:fixed; bottom:24px; right:24px;
+/* AD leaderboard */
+.ad-leader {
+  background:var(--surface2);
+  border:1px dashed #333;
+  width:468px; height:60px;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:3px;
+  flex-shrink:0;
+}
+.ad-tag { font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:.15em; color:#444; text-transform:uppercase; }
+
+/* NAV */
+.main-nav {
+  max-width:1200px; margin:0 auto;
+  display:flex; overflow-x:auto; gap:0;
+  scrollbar-width:none;
+}
+.main-nav::-webkit-scrollbar { display:none; }
+.main-nav a {
+  font-family:'IBM Plex Mono',monospace; font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); text-decoration:none;
+  padding:12px 18px;
+  border-right:1px solid var(--border);
+  white-space:nowrap;
+  transition:all .2s;
+  position:relative;
+}
+.main-nav a::after {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+  background:var(--accent); transform:scaleX(0); transition:transform .2s;
+}
+.main-nav a:hover { color:var(--text); }
+.main-nav a:hover::after, .main-nav a.active::after { transform:scaleX(1); }
+.main-nav a.active { color:var(--accent); }
+
+/* LAYOUT */
+.container { max-width:1200px; margin:0 auto; padding:32px 24px; }
+
+/* HERO GRID */
+.hero-grid {
+  display:grid;
+  grid-template-columns: 1fr 1fr 300px;
+  grid-template-rows: auto auto;
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  margin-bottom:40px;
+}
+.hero-cell {
+  background:var(--bg);
+  padding:24px;
+  cursor:pointer;
+  transition:background .2s;
+}
+.hero-cell:hover { background:var(--surface); }
+.hero-cell.big {
+  grid-row: span 2;
+  padding:32px;
+}
+.hero-cell.tall { grid-row: span 2; }
+
+.article-cat {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+  margin-bottom:10px;
+}
+.cat-tech { color:var(--accent2); }
+.cat-world { color:var(--green); }
+.cat-biz { color:var(--accent); }
+.cat-sci { color:#c47eff; }
+.cat-pol { color:var(--red); }
+.cat-sport { color:#ff9d4a; }
+.cat-cult { color:#ff6eb0; }
+
+.article-title {
+  font-family:'Lora',serif;
+  font-weight:700; line-height:1.25;
+  margin-bottom:10px;
+  transition:color .2s;
+}
+.hero-cell:hover .article-title { color:var(--accent); }
+.big .article-title { font-size:28px; }
+.med .article-title { font-size:19px; }
+.sml .article-title { font-size:15px; }
+
+.article-excerpt {
+  font-size:14px; color:var(--muted); line-height:1.65;
+  margin-bottom:14px;
+}
+.article-meta {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px; color:#444; letter-spacing:.08em;
+  display:flex; gap:12px; align-items:center;
+}
+.article-meta .sep { color:#333; }
+
+/* FAKE IMAGE BLOCK */
+.art-img {
+  width:100%; aspect-ratio:16/9;
+  margin-bottom:16px; position:relative; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.art-img-inner { width:100%; height:100%; }
+.art-img-label {
+  position:absolute; bottom:8px; left:8px;
+  background:var(--accent); color:#000;
+  font-family:'IBM Plex Mono',monospace; font-size:8px; letter-spacing:.15em;
+  padding:3px 8px;
+}
+
+/* SIDEBAR stories */
+.sidebar-art {
+  padding:16px 24px;
+  border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background .2s;
+}
+.sidebar-art:last-child { border-bottom:none; }
+.sidebar-art:hover { background:var(--surface); }
+.sidebar-art:hover .article-title { color:var(--accent); }
+.sidebar-art .article-title { font-size:14px; }
+
+/* AD rect */
+.ad-rect {
+  background:var(--surface2);
+  border:1px dashed #333;
+  height:250px;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:4px;
+  margin:24px 0;
+}
+
+/* SECTION */
+.section-row {
+  display:flex; align-items:center; gap:14px;
+  margin:40px 0 20px;
+}
+.section-row h2 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px; letter-spacing:3px;
+  color:var(--text); white-space:nowrap;
+}
+.section-row .rule { flex:1; height:1px; background:var(--border); }
+.section-row .more {
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.12em; color:var(--accent); text-decoration:none;
+  transition:opacity .2s;
+}
+.section-row .more:hover { opacity:.6; }
+
+/* CARD GRID */
+.card-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--border); border:1px solid var(--border);
+  margin-bottom:40px;
+}
+.card {
+  background:var(--bg); padding:20px; cursor:pointer; transition:background .2s;
+}
+.card:hover { background:var(--surface); }
+.card:hover .article-title { color:var(--accent); }
+.card .article-title { font-size:16px; }
+.card-num {
+  font-family:'Bebas Neue',sans-serif; font-size:48px;
+  color:var(--border); line-height:1; margin-bottom:8px;
+  transition:color .2s;
+}
+.card:hover .card-num { color:var(--accent); opacity:.4; }
+
+/* TWO-COL */
+.two-col { display:grid; grid-template-columns:1fr 300px; gap:32px; }
+
+.opinion-item {
+  padding:20px 0; border-bottom:1px solid var(--border);
+  cursor:pointer; display:flex; gap:16px; align-items:flex-start;
+  transition: opacity .2s;
+}
+.opinion-item:hover { opacity:.75; }
+.opinion-item:hover .article-title { color:var(--accent); }
+.opinion-num {
+  font-family:'Bebas Neue',sans-serif; font-size:40px;
+  color:var(--border); flex-shrink:0; width:36px; line-height:1;
+}
+.opinion-item .article-title { font-size:16px; margin-bottom:4px; }
+.opinion-author { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.08em; }
+
+/* STICKY SIDEBAR */
+.sticky-col { position:sticky; top:16px; }
+.widget {
   background:var(--surface); border:1px solid var(--border);
-  padding:14px 18px; max-width:320px;
-  font-size:13px; transform:translateX(400px); transition:transform .3s;
-  z-index:100; display:flex; align-items:center; gap:10px;
+  margin-bottom:20px;
 }
-.notif.show { transform:translateX(0); }
-.notif-icon { font-size:18px; }
+.widget-head {
+  font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:3px;
+  color:var(--text); padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.widget-head span { font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--accent); letter-spacing:.12em; }
 
-/* RESPONSIVE */
-@media(max-width:768px){
-  .sidebar{display:none;}
-  .main{margin-left:0;}
-  .stat-grid{grid-template-columns:1fr 1fr;}
-  .form-grid{grid-template-columns:1fr;}
-  .form-group.full{grid-column:span 1;}
+.trend-item {
+  padding:12px 16px; border-bottom:1px solid var(--border);
+  cursor:pointer; display:flex; gap:12px; align-items:center;
+  transition:background .2s;
 }
+.trend-item:last-child { border-bottom:none; }
+.trend-item:hover { background:var(--surface2); }
+.trend-n { font-family:'Bebas Neue',sans-serif; font-size:24px; color:var(--border); flex-shrink:0; width:28px; }
+.trend-t { font-size:12px; line-height:1.4; }
+
+/* NEWSLETTER */
+.nl-widget { background:var(--surface); border:1px solid var(--border); padding:20px; margin-bottom:20px; }
+.nl-widget h4 { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px; margin-bottom:6px; }
+.nl-widget p { font-size:12px; color:var(--muted); margin-bottom:14px; line-height:1.5; }
+.nl-input {
+  width:100%; background:var(--bg); border:1px solid var(--border);
+  color:var(--text); padding:9px 12px;
+  font-family:'IBM Plex Sans',sans-serif; font-size:12px;
+  margin-bottom:8px;
+}
+.nl-input::placeholder { color:#444; }
+.nl-input:focus { outline:1px solid var(--accent); }
+.nl-btn {
+  width:100%; background:var(--accent); border:none; color:#000;
+  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.15em;
+  padding:10px; cursor:pointer; font-weight:600;
+  transition:opacity .2s;
+}
+.nl-btn:hover { opacity:.8; }
+
+/* MID AD */
+.ad-mid {
+  background:var(--surface2); border:1px dashed #333;
+  height:90px; display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:4px; margin:32px 0;
+}
+
+/* FOOTER */
+footer {
+  background:var(--surface); border-top:1px solid var(--border);
+  padding:48px 24px 24px; margin-top:60px;
+}
+.footer-inner { max-width:1200px; margin:0 auto; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; margin-bottom:40px; }
+.footer-logo { font-family:'Bebas Neue',sans-serif; font-size:40px; letter-spacing:4px; margin-bottom:10px; }
+.footer-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+.footer-col h5 {
+  font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--text); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border);
+}
+.footer-col a { display:block; color:var(--muted); text-decoration:none; font-size:13px; padding:4px 0; transition:color .2s; }
+.footer-col a:hover { color:var(--text); }
+.footer-bottom {
+  padding-top:24px; border-top:1px solid var(--border);
+  display:flex; justify-content:space-between;
+  font-family:'IBM Plex Mono',monospace; font-size:10px; color:#333; letter-spacing:.08em;
+}
+
+/* ARTICLE PAGE */
+.article-page { display:none; }
+.article-page.active { display:block; }
+.home-page.hidden { display:none; }
+
+.art-full { max-width:720px; margin:0 auto; padding:40px 24px; }
+.art-full-cat { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; margin-bottom:16px; }
+.art-full-title { font-family:'Lora',serif; font-size:36px; font-weight:700; line-height:1.2; margin-bottom:16px; }
+.art-full-meta { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.08em; margin-bottom:24px; display:flex; gap:16px; padding-bottom:24px; border-bottom:1px solid var(--border); }
+.art-full-body { font-family:'Lora',serif; font-size:17px; line-height:1.85; color:#ccc; }
+.art-full-body p { margin-bottom:20px; }
+.back-btn {
+  background:none; border:1px solid var(--border); color:var(--muted);
+  font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em;
+  padding:8px 16px; cursor:pointer; margin:32px 0 0; transition:all .2s;
+}
+.back-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+/* Gradient backgrounds for article images */
+.g1{background:linear-gradient(135deg,#0d1b3e,#1a4480,#4a9eff22)}
+.g2{background:linear-gradient(135deg,#1a0d3e,#4a1a80,#9d4aff22)}
+.g3{background:linear-gradient(135deg,#3e1a0d,#801a1a,#e8544722)}
+.g4{background:linear-gradient(135deg,#0d3e1a,#1a8040,#47e8a022)}
+.g5{background:linear-gradient(135deg,#3e350d,#806a1a,#e8c54722)}
+.g6{background:linear-gradient(135deg,#0d3e3e,#1a8080,#47e8e822)}
+
+/* Responsive */
+@media(max-width:900px){
+  .hero-grid { grid-template-columns:1fr; }
+  .hero-cell.big { grid-row:span 1; }
+  .hero-cell.tall { grid-row:span 1; }
+  .card-grid { grid-template-columns:1fr 1fr; }
+  .two-col { grid-template-columns:1fr; }
+  .footer-grid { grid-template-columns:1fr 1fr; }
+  .logo { font-size:48px; }
+  .ad-leader { display:none; }
+}
+@media(max-width:580px){
+  .card-grid { grid-template-columns:1fr; }
+  .footer-grid { grid-template-columns:1fr; }
+}
+
+/* Fade in */
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.hero-cell, .card { animation:fadeUp .4s ease both; }
+.hero-cell:nth-child(1){animation-delay:.05s}
+.hero-cell:nth-child(2){animation-delay:.1s}
+.hero-cell:nth-child(3){animation-delay:.15s}
+.card:nth-child(1){animation-delay:.05s}
+.card:nth-child(2){animation-delay:.1s}
+.card:nth-child(3){animation-delay:.15s}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-logo">VÉRTICE<span>ADMIN PANEL</span></div>
-  <div class="nav-section">Principal</div>
-  <div class="nav-item active" onclick="showTab('generator')"><span class="nav-icon">✦</span> Generador IA</div>
-  <div class="nav-item" onclick="showTab('articles')"><span class="nav-icon">◈</span> Artículos</div>
-  <div class="nav-item" onclick="showTab('jsoneditor')"><span class="nav-icon">⟨⟩</span> Editor JSON</div>
-  <div class="nav-section">Extras</div>
-  <div class="nav-item" onclick="window.open('index.html','_blank')"><span class="nav-icon">↗</span> Ver portal</div>
-  <div class="sidebar-footer">VÉRTICE v1.0 · Sin WordPress</div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-date" id="dateStr"></span>
+    <div class="topbar-ticker">
+      <div class="ticker-inner" id="tickerInner"></div>
+    </div>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn on" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
 </div>
 
-<!-- MAIN -->
-<div class="main">
-  <div class="topbar">
-    <h1 id="pageTitle">GENERADOR IA</h1>
-    <div class="topbar-actions">
-      <span class="badge green">● EN VIVO</span>
-      <span class="badge muted">Sin WordPress</span>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo-sub" id="logoSub">NOTICIAS INDEPENDIENTES</div>
+      <a href="#" class="logo" onclick="showHome()">VÉRTICE</a>
+    </div>
+    <div class="ad-leader">
+      <span class="ad-tag">📢 Google AdSense — 468 × 60</span>
+      <span class="ad-tag" style="color:#333">Reemplaza con tu código</span>
+    </div>
+  </div>
+  <nav class="main-nav" id="mainNav"></nav>
+</header>
+
+<!-- HOME PAGE -->
+<div class="home-page" id="homePage">
+<div class="container">
+
+  <!-- HERO GRID -->
+  <div class="hero-grid" id="heroGrid"></div>
+
+  <!-- SECTION: Más Noticias -->
+  <div class="section-row">
+    <h2 id="secMore">MÁS NOTICIAS</h2>
+    <div class="rule"></div>
+    <a href="#" class="more" id="secMoreLink">Ver todo →</a>
+  </div>
+  <div class="card-grid" id="cardGrid"></div>
+
+  <!-- AD MID -->
+  <div class="ad-mid">
+    <span class="ad-tag">📢 Google AdSense — Banner adaptable 970 × 90</span>
+  </div>
+
+  <!-- TWO COL -->
+  <div class="two-col">
+    <div>
+      <div class="section-row" style="margin-top:0">
+        <h2 id="secOpinion">OPINIÓN</h2>
+        <div class="rule"></div>
+      </div>
+      <div id="opinionList"></div>
+    </div>
+    <div class="sticky-col">
+
+      <div class="nl-widget">
+        <h4 id="nlH">NEWSLETTER</h4>
+        <p id="nlP">El mejor periodismo, en tu correo cada mañana.</p>
+        <input class="nl-input" type="email" id="nlEmail" placeholder="correo@ejemplo.com">
+        <button class="nl-btn" id="nlBtnEl">SUSCRIBIRME</button>
+      </div>
+
+      <div class="widget">
+        <div class="widget-head"><span id="trendH">LO MÁS LEÍDO</span><span>HOY</span></div>
+        <div id="trendList"></div>
+      </div>
+
+      <!-- AD RECT -->
+      <div class="ad-rect">
+        <span class="ad-tag">📢 Google AdSense</span>
+        <span class="ad-tag" style="color:#333">300 × 250</span>
+      </div>
+
     </div>
   </div>
 
-  <div class="content">
+</div><!-- /container -->
+</div><!-- /home-page -->
 
-    <!-- STATS -->
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="stat-label">Artículos</div>
-        <div class="stat-val" id="statArts">8</div>
-        <div class="stat-delta up">↑ Listos para publicar</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Idiomas</div>
-        <div class="stat-val">2</div>
-        <div class="stat-delta up">ES + EN</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Zonas ad</div>
-        <div class="stat-val">6</div>
-        <div class="stat-delta up">↑ Listas para AdSense</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Hosting</div>
-        <div class="stat-val">$0</div>
-        <div class="stat-delta up">GitHub Pages gratis</div>
-      </div>
+<!-- ARTICLE PAGE -->
+<div class="article-page" id="articlePage">
+  <div class="container">
+    <button class="back-btn" onclick="showHome()" id="backBtn">← VOLVER</button>
+    <div class="ad-mid" style="margin-top:24px">
+      <span class="ad-tag">📢 Google AdSense — Banner</span>
     </div>
-
-    <!-- TAB: GENERATOR -->
-    <div id="tab-generator">
-      <div class="gen-panel">
-        <div class="gen-title">
-          GENERADOR DE ARTÍCULOS
-          <span class="ai-pill">✦ IA</span>
-        </div>
-        <div class="gen-sub">Ingresa el tema y la IA redacta el artículo completo en español e inglés en segundos.</div>
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Tema del artículo *</label>
-            <input class="form-input" id="topicInput" placeholder="Ej: La crisis del agua en el norte de México" type="text">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Categoría</label>
-            <select class="form-select" id="catSelect">
-              <option value="world">🌍 Mundo</option>
-              <option value="tech">💻 Tecnología</option>
-              <option value="biz">📈 Economía</option>
-              <option value="sci">🔬 Ciencia</option>
-              <option value="sport">⚽ Deportes</option>
-              <option value="pol">🏛️ Política</option>
-              <option value="cult">🎭 Cultura</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Tono editorial</label>
-            <select class="form-select" id="toneSelect">
-              <option value="neutral">Neutro / Informativo</option>
-              <option value="analytic">Analítico / Profundo</option>
-              <option value="breaking">Breaking news / Urgente</option>
-              <option value="opinion">Columna de opinión</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Longitud</label>
-            <select class="form-select" id="lenSelect">
-              <option value="short">Corto (2 min lectura)</option>
-              <option value="medium" selected>Medio (4-5 min)</option>
-              <option value="long">Largo (8+ min)</option>
-            </select>
-          </div>
-          <div class="form-group full">
-            <label class="form-label">Contexto adicional (opcional)</label>
-            <textarea class="form-textarea" id="contextInput" placeholder="Datos, fuentes, ángulo específico que quieras incluir..."></textarea>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <button class="gen-btn" id="genBtn" onclick="generateArticle()">
-            <span id="genBtnIcon">✦</span>
-            <span id="genBtnText">GENERAR ARTÍCULO</span>
-          </button>
-          <button class="gen-btn-sec" onclick="clearForm()">Limpiar</button>
-          <span id="genStatus" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);"></span>
-        </div>
-
-        <!-- RESULT -->
-        <div class="result-box" id="resultBox">
-          <div class="result-tabs">
-            <div class="result-tab active" onclick="switchResultTab('es')">🇲🇽 Español</div>
-            <div class="result-tab" onclick="switchResultTab('en')">🇺🇸 English</div>
-            <div class="result-tab" onclick="switchResultTab('json')">⟨⟩ JSON</div>
-          </div>
-          <div class="result-content" id="resultContent"></div>
-          <div class="result-actions">
-            <button class="gen-btn" onclick="addToPortal()" id="addBtn">+ AGREGAR AL PORTAL</button>
-            <button class="gen-btn-sec" onclick="copyJSON()">Copiar JSON</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- HOW TO -->
-      <div style="background:var(--surface);border:1px solid var(--border);padding:20px">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;margin-bottom:12px">CÓMO PUBLICAR SIN WORDPRESS</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-          <div style="border:1px solid var(--border2);padding:14px">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:6px">01 GENERAR</div>
-            <div style="font-size:12px;color:var(--muted);line-height:1.6">Escribe el tema arriba y haz clic en "Generar". La IA redacta el artículo completo en ambos idiomas.</div>
-          </div>
-          <div style="border:1px solid var(--border2);padding:14px">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:6px">02 EDITAR JSON</div>
-            <div style="font-size:12px;color:var(--muted);line-height:1.6">Copia el JSON generado y pégalo en el array ARTICLES dentro de <code style="color:#7ec8e3">index.html</code>. Nada más.</div>
-          </div>
-          <div style="border:1px solid var(--border2);padding:14px">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);margin-bottom:6px">03 PUBLICAR</div>
-            <div style="font-size:12px;color:var(--muted);line-height:1.6">Sube el archivo a <strong style="color:var(--text)">GitHub Pages</strong> o <strong style="color:var(--text)">Netlify</strong>. Gratis, rápido, sin servidor.</div>
-          </div>
-        </div>
-      </div>
+    <div class="art-full" id="artFull"></div>
+    <div class="ad-mid">
+      <span class="ad-tag">📢 Google AdSense — Banner</span>
     </div>
-
-    <!-- TAB: ARTICLES -->
-    <div id="tab-articles" style="display:none">
-      <div class="table-wrap">
-        <div class="table-head">
-          <h3>ARTÍCULOS PUBLICADOS</h3>
-          <button class="gen-btn" style="padding:8px 16px;font-size:11px" onclick="showTab('generator')">+ NUEVO</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th><th>Título</th><th>Categoría</th><th>Autor</th><th>Fecha</th><th>Lectura</th><th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="articlesTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TAB: JSON EDITOR -->
-    <div id="tab-jsoneditor" style="display:none">
-      <div class="json-editor-wrap">
-        <div class="json-toolbar">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px">EDITOR DE ARTÍCULOS (JSON)</div>
-          <div style="display:flex;gap:10px">
-            <button class="gen-btn-sec" onclick="formatJSON()">Formatear</button>
-            <button class="gen-btn" onclick="saveJSON()" style="padding:8px 18px;font-size:11px">GUARDAR</button>
-          </div>
-        </div>
-        <textarea class="json-editor" id="jsonEditor" spellcheck="false"></textarea>
-      </div>
-      <div style="margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)">
-        💡 Edita directamente el JSON de los artículos. Cuando termines, copia el contenido y reemplaza el array ARTICLES en index.html
-      </div>
-    </div>
-
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<!-- NOTIFICATION -->
-<div class="notif" id="notif">
-  <span class="notif-icon" id="notifIcon">✓</span>
-  <span id="notifText">Acción completada</span>
+  </div>
 </div>
 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">VÉRTICE</div>
+        <p class="footer-desc" id="footerDesc">Periodismo independiente. Noticias verificadas en español e inglés.</p>
+      </div>
+      <div class="footer-col" id="fc1"></div>
+      <div class="footer-col" id="fc2"></div>
+      <div class="footer-col" id="fc3"></div>
+    </div>
+    <div class="footer-bottom">
+      <span id="footerCopy">© 2025 VÉRTICE Media</span>
+      <span id="footerLinks">Privacidad · Términos · Cookies · Publicidad</span>
+    </div>
+  </div>
+</footer>
+
 <script>
-// Articles data (same as index.html for admin view)
-let ARTICLES = [
-  { id:1, lang:"both", cat:"pol", date:"2025-03-04", author:"María González", readMin:6, gradient:"g1", es:{ title:"Líderes del G20 acuerdan histórico marco para regular la IA a nivel global", excerpt:"Representantes de las veinte economías más grandes del mundo firmaron hoy un tratado sin precedentes.", body:"Contenido completo en index.html" }, en:{ title:"G20 leaders agree historic framework to regulate AI globally", excerpt:"Representatives of the world's twenty largest economies today signed an unprecedented treaty.", body:"Full content in index.html" } },
-  { id:2, lang:"both", cat:"tech", date:"2025-03-04", author:"Carlos Ruiz", readMin:4, gradient:"g2", es:{ title:"Nuevo chip cuántico de Google procesa en segundos lo que tomaría mil años", excerpt:"El equipo de computación cuántica de Google presentó Willow-X.", body:"Contenido completo en index.html" }, en:{ title:"Google's new quantum chip processes in seconds what would take a supercomputer a thousand years", excerpt:"Google's quantum computing team unveiled Willow-X.", body:"Full content in index.html" } },
-  { id:3, lang:"both", cat:"biz", date:"2025-03-03", author:"Ana Torres", readMin:3, gradient:"g5", es:{ title:"El peso mexicano alcanza su nivel más fuerte frente al dólar en dos décadas", excerpt:"La moneda mexicana tocó los 15,20 pesos por dólar.", body:"Contenido completo en index.html" }, en:{ title:"Mexican peso hits strongest level against dollar in two decades", excerpt:"The Mexican currency touched 15.20 pesos per dollar.", body:"Full content in index.html" } },
-  { id:4, lang:"both", cat:"sci", date:"2025-03-03", author:"Dr. Fernanda López", readMin:5, gradient:"g6", es:{ title:"Científicos del CERN detectan por primera vez una quinta fuerza fundamental", excerpt:"El experimento LHCb reporta una anomalía estadísticamente significativa.", body:"Contenido completo en index.html" }, en:{ title:"CERN scientists detect a fifth fundamental force of nature for the first time", excerpt:"The LHCb experiment reports a statistically significant anomaly.", body:"Full content in index.html" } },
-  { id:5, lang:"both", cat:"sport", date:"2025-03-04", author:"Roberto Díaz", readMin:2, gradient:"g3", es:{ title:"La selección argentina gana Copa América con gol agónico de Lautaro", excerpt:"Argentina derrotó a Brasil 2-1 en una final disputada en el estadio Azteca.", body:"Contenido completo en index.html" }, en:{ title:"Argentina win Copa América with Lautaro's agonizing goal in minute 94", excerpt:"Argentina defeated Brazil 2-1 in a final played at Azteca Stadium.", body:"Full content in index.html" } },
-  { id:6, lang:"both", cat:"world", date:"2025-03-02", author:"Laura Sánchez", readMin:4, gradient:"g4", es:{ title:"ONU declara emergencia humanitaria en cuatro países del Sahel", excerpt:"El Programa Mundial de Alimentos alerta que 40 millones enfrentan hambre.", body:"Contenido completo en index.html" }, en:{ title:"UN declares humanitarian emergency in four Sahel countries", excerpt:"The World Food Programme warns 40 million face severe food insecurity.", body:"Full content in index.html" } },
-  { id:7, lang:"both", cat:"cult", date:"2025-03-01", author:"Daniela Morales", readMin:3, gradient:"g2", es:{ title:"La novela 'Fracturas' de la colombiana Valeria Ríos gana el Premio Booker Internacional", excerpt:"La primera novela latinoamericana en ganar el prestigioso galardón.", body:"Contenido completo en index.html" }, en:{ title:"Colombian Valeria Ríos' 'Fracturas' wins the International Booker Prize", excerpt:"The first Latin American novel to win the prestigious literary award.", body:"Full content in index.html" } },
-  { id:8, lang:"both", cat:"pol", date:"2025-02-28", author:"Héctor Vargas", readMin:5, gradient:"g1", es:{ title:"México y Unión Europea firman acuerdo de libre comercio ampliado", excerpt:"El tratado crea zona para 650 millones de consumidores.", body:"Contenido completo en index.html" }, en:{ title:"Mexico and EU sign expanded free trade agreement", excerpt:"The treaty creates a zone of 650 million consumers.", body:"Full content in index.html" } }
+// ═══════════════════════════════════════════════════
+// ARTÍCULOS — edita este array para agregar noticias
+// Guarda como articles.json para manejarlo aparte
+// ═══════════════════════════════════════════════════
+const ARTICLES = [
+  {
+    id:1, lang:"both", cat:"pol", date:"2025-03-04", author:"María González", readMin:6,
+    gradient:"g1",
+    es:{ title:"Líderes del G20 acuerdan histórico marco para regular la inteligencia artificial a nivel global", excerpt:"Representantes de las veinte economías más grandes del mundo firmaron hoy un tratado sin precedentes que establece estándares mínimos de seguridad para sistemas de IA.", body:"Los líderes del G20 se reunieron esta semana en Ginebra para firmar el primer tratado internacional vinculante sobre inteligencia artificial. El acuerdo, que tardó tres años en negociarse, establece un conjunto de estándares mínimos de seguridad, transparencia y responsabilidad para los desarrolladores de sistemas de IA.\n\nEl pacto incluye la creación de un organismo internacional de supervisión con sede en Viena, con capacidad para auditar a las empresas tecnológicas más grandes del mundo. Los países firmantes se comprometen a incorporar estas normas a su legislación nacional antes de finales de 2026.\n\nLa canciller alemana destacó que se trata de un 'momento histórico' comparable a los tratados nucleares de la Guerra Fría. Sin embargo, varios grupos de defensa de derechos digitales advirtieron que el texto final tiene importantes vacíos en materia de vigilancia gubernamental.\n\nChina y Estados Unidos, los dos mayores actores en el campo de la IA, firmaron con reservas específicas que limitan la jurisdicción del organismo supervisor sobre sus empresas nacionales." },
+    en:{ title:"G20 leaders agree historic framework to regulate artificial intelligence globally", excerpt:"Representatives of the world's twenty largest economies today signed an unprecedented treaty establishing minimum safety standards for AI systems.", body:"G20 leaders gathered this week in Geneva to sign the first internationally binding treaty on artificial intelligence. The agreement, which took three years to negotiate, establishes a set of minimum standards for safety, transparency and accountability for AI system developers.\n\nThe pact includes the creation of an international oversight body headquartered in Vienna, with the authority to audit the world's largest tech companies. Signatory countries commit to incorporating these rules into national law by the end of 2026.\n\nThe German Chancellor described it as a 'historic moment' comparable to the nuclear treaties of the Cold War. However, several digital rights groups warned that the final text has significant gaps regarding government surveillance.\n\nChina and the United States, the two biggest players in AI, signed with specific reservations that limit the supervisory body's jurisdiction over their domestic companies." }
+  },
+  {
+    id:2, lang:"both", cat:"tech", date:"2025-03-04", author:"Carlos Ruiz", readMin:4,
+    gradient:"g2",
+    es:{ title:"Nuevo chip cuántico de Google procesa en segundos lo que tomaría mil años a una supercomputadora", excerpt:"El equipo de computación cuántica de Google presentó Willow-X, su procesador más avanzado, capaz de resolver problemas de optimización de enorme complejidad.", body:"Google anunció hoy Willow-X, su nuevo procesador cuántico que marca un hito en la industria. El chip cuenta con 1.200 qubits estables a temperatura ambiente, una hazaña que científicos consideraban imposible hace apenas cinco años.\n\nEn pruebas de referencia publicadas en Nature, Willow-X completó un cálculo de optimización en 4,2 segundos. El mismo cálculo habría requerido aproximadamente 10^27 años en la supercomputadora más potente del mundo.\n\nEl director del laboratorio cuántico de Google señaló que el siguiente objetivo es demostrar 'supremacía cuántica práctica', es decir, resolver un problema real del mundo empresarial que ningún sistema clásico pueda abordar en tiempo razonable.\n\nIBM y Microsoft respondieron con escepticismo, señalando que los benchmarks elegidos favorecen artificialmente la arquitectura de Google. La comunidad científica espera resultados independientes en los próximos meses." },
+    en:{ title:"Google's new quantum chip processes in seconds what would take a supercomputer a thousand years", excerpt:"Google's quantum computing team unveiled Willow-X, its most advanced processor yet, capable of solving enormously complex optimization problems.", body:"Google today announced Willow-X, its new quantum processor marking a milestone in the industry. The chip features 1,200 stable qubits at room temperature — a feat scientists considered impossible just five years ago.\n\nIn benchmark tests published in Nature, Willow-X completed an optimization calculation in 4.2 seconds. The same calculation would have required approximately 10^27 years on the world's most powerful supercomputer.\n\nThe head of Google's quantum lab noted that the next goal is to demonstrate 'practical quantum supremacy' — solving a real business problem that no classical system can address in a reasonable timeframe.\n\nIBM and Microsoft responded with skepticism, noting that the chosen benchmarks artificially favor Google's architecture. The scientific community awaits independent results in the coming months." }
+  },
+  {
+    id:3, lang:"both", cat:"biz", date:"2025-03-03", author:"Ana Torres", readMin:3,
+    gradient:"g5",
+    es:{ title:"El peso mexicano alcanza su nivel más fuerte frente al dólar en dos décadas impulsado por nearshoring", excerpt:"La moneda mexicana tocó los 15,20 pesos por dólar en sesión interbancaria, beneficiada por el flujo récord de inversión extranjera directa.", body:"El peso mexicano alcanzó este martes su cotización más fuerte en veinte años frente al dólar estadounidense, tocando los 15,20 pesos por unidad en el mercado interbancario. La apreciación acumula ya un 18% en lo que va del año.\n\nEconomistas atribuyen el fenómeno principalmente al nearshoring: la reubicación masiva de plantas manufactureras desde Asia hacia México, impulsada por empresas que buscan reducir riesgos de cadena de suministro y aprovechar el T-MEC.\n\nSolo en el primer bimestre de 2025, México recibió 28.000 millones de dólares en inversión extranjera directa, superando el récord anual anterior. Los estados de Nuevo León, Coahuila y Guanajuato concentran el 60% de los nuevos proyectos.\n\nEl Banco de México advirtió que la fortaleza del peso también presenta riesgos para los exportadores y podría frenar el dinamismo de la manufactura si persiste." },
+    en:{ title:"Mexican peso hits its strongest level against the dollar in two decades driven by nearshoring", excerpt:"The Mexican currency touched 15.20 pesos per dollar in interbank trading, buoyed by a record flow of foreign direct investment.", body:"The Mexican peso on Tuesday reached its strongest exchange rate in twenty years against the US dollar, touching 15.20 pesos per unit in the interbank market. The appreciation now totals 18% year-to-date.\n\nEconomists attribute the phenomenon primarily to nearshoring: the mass relocation of manufacturing plants from Asia to Mexico, driven by companies seeking to reduce supply chain risks and take advantage of the USMCA.\n\nIn the first two months of 2025 alone, Mexico received $28 billion in foreign direct investment, surpassing the previous annual record. The states of Nuevo León, Coahuila and Guanajuato account for 60% of new projects.\n\nBanco de México warned that the peso's strength also presents risks for exporters and could slow manufacturing momentum if it persists." }
+  },
+  {
+    id:4, lang:"both", cat:"sci", date:"2025-03-03", author:"Dr. Fernanda López", readMin:5,
+    gradient:"g6",
+    es:{ title:"Científicos del CERN detectan por primera vez una quinta fuerza fundamental de la naturaleza", excerpt:"El experimento LHCb reporta una anomalía estadísticamente significativa que no puede explicarse con el Modelo Estándar de la física de partículas.", body:"Investigadores del CERN anunciaron hoy el descubrimiento más significativo en física de partículas desde el bosón de Higgs: evidencia experimental de una quinta fuerza fundamental de la naturaleza.\n\nEl experimento LHCb, que analiza el decaimiento de mesones B, detectó una desviación de 5,2 sigmas respecto a las predicciones del Modelo Estándar, superando el umbral convencional de 5 sigmas que la comunidad científica exige para declarar un descubrimiento.\n\nSi se confirma, este hallazgo revolucionaría la física teórica. Las cuatro fuerzas conocidas —gravitacional, electromagnética, nuclear fuerte y nuclear débil— son la base de toda la física moderna desde hace más de medio siglo.\n\nLos autores del estudio llaman a la nueva interacción 'fuerza leptoquark' por su aparente mediación entre quarks y leptones. Laboratorios rivales en Estados Unidos y Japón ya trabajan para replicar el experimento de forma independiente." },
+    en:{ title:"CERN scientists detect a fifth fundamental force of nature for the first time", excerpt:"The LHCb experiment reports a statistically significant anomaly that cannot be explained by the Standard Model of particle physics.", body:"CERN researchers today announced the most significant discovery in particle physics since the Higgs boson: experimental evidence of a fifth fundamental force of nature.\n\nThe LHCb experiment, which analyzes the decay of B mesons, detected a 5.2-sigma deviation from Standard Model predictions, exceeding the conventional 5-sigma threshold the scientific community requires to declare a discovery.\n\nIf confirmed, this finding would revolutionize theoretical physics. The four known forces — gravitational, electromagnetic, strong nuclear and weak nuclear — have been the foundation of all modern physics for more than half a century.\n\nThe study's authors call the new interaction the 'leptoquark force' for its apparent mediation between quarks and leptons. Rival laboratories in the United States and Japan are already working to independently replicate the experiment." }
+  },
+  {
+    id:5, lang:"both", cat:"sport", date:"2025-03-04", author:"Roberto Díaz", readMin:2,
+    gradient:"g3",
+    es:{ title:"La selección argentina gana Copa América con gol agónico de Lautaro en el minuto 94", excerpt:"Argentina derrotó a Brasil 2-1 en una final disputada en el estadio Azteca ante 105,000 espectadores.", body:"Argentina se coronó campeón de la Copa América 2025 con un gol dramático de Lautaro Martínez en el minuto 94, que sentenció una final épica ante Brasil en el estadio Azteca de Ciudad de México.\n\nBrasil se había adelantado en el marcador con un tanto de Vinicius Jr. en el primer tiempo, pero Julián Álvarez igualó a falta de veinte minutos para el final. Cuando todo apuntaba a la prórroga, Lautaro recibió un pase filtrado y definió con la derecha ante el portero brasileño.\n\nMessi, quien jugó los últimos 30 minutos como sustituto, fue declarado el mejor jugador del torneo a pesar de no marcar en la final. El capitán argentino suma así su tercera Copa América.\n\nLa FIFA calificó el partido como 'uno de los mejores finales de la historia del fútbol sudamericano'." },
+    en:{ title:"Argentina win Copa América with Lautaro's agonizing goal in minute 94", excerpt:"Argentina defeated Brazil 2-1 in a final played at Azteca Stadium before 105,000 spectators.", body:"Argentina were crowned Copa América 2025 champions with a dramatic goal from Lautaro Martínez in minute 94, sealing an epic final against Brazil at Azteca Stadium in Mexico City.\n\nBrazil had taken the lead through a Vinicius Jr. goal in the first half, but Julián Álvarez equalized with twenty minutes remaining. When extra time seemed certain, Lautaro received a through pass and finished with his right foot past the Brazilian goalkeeper.\n\nMessi, who played the final 30 minutes as a substitute, was named the tournament's best player despite not scoring in the final. The Argentine captain thus claims his third Copa América.\n\nFIFA described the match as 'one of the greatest finals in the history of South American football'." }
+  },
+  {
+    id:6, lang:"both", cat:"world", date:"2025-03-02", author:"Laura Sánchez", readMin:4,
+    gradient:"g4",
+    es:{ title:"ONU declara emergencia humanitaria en cuatro países del Sahel ante avance del hambre", excerpt:"El Programa Mundial de Alimentos alerta que 40 millones de personas enfrentan inseguridad alimentaria severa en la región.", body:"La Organización de las Naciones Unidas declaró este lunes una emergencia humanitaria de nivel 3 —el más alto— en Malí, Burkina Faso, Niger y Chad, donde la confluencia de conflictos armados, sequías y crisis económicas ha empujado a millones de personas al borde del hambre.\n\nEl director ejecutivo del Programa Mundial de Alimentos advirtió que sin una respuesta internacional inmediata y sostenida, la región podría enfrentar niveles de hambre comparables a los de Etiopía en 1984.\n\nLa situación se agravó en los últimos seis meses por el retiro de fuerzas de paz de la ONU tras los golpes de Estado en tres de los cuatro países, lo que dejó amplias zonas rurales sin acceso a ayuda humanitaria.\n\nLa Unión Europea anunció un paquete de emergencia de 800 millones de euros, aunque organizaciones civiles señalan que la cifra es insuficiente para las necesidades reales." },
+    en:{ title:"UN declares humanitarian emergency in four Sahel countries as hunger advances", excerpt:"The World Food Programme warns that 40 million people face severe food insecurity in the region.", body:"The United Nations on Monday declared a Level 3 humanitarian emergency — the highest level — in Mali, Burkina Faso, Niger and Chad, where the confluence of armed conflicts, droughts and economic crises has pushed millions of people to the brink of hunger.\n\nThe executive director of the World Food Programme warned that without an immediate and sustained international response, the region could face hunger levels comparable to Ethiopia in 1984.\n\nThe situation has worsened over the past six months following the withdrawal of UN peacekeeping forces after coups in three of the four countries, leaving large rural areas without access to humanitarian aid.\n\nThe European Union announced an emergency package of 800 million euros, though civil society organizations note the figure is insufficient for actual needs." }
+  },
+  {
+    id:7, lang:"both", cat:"cult", date:"2025-03-01", author:"Daniela Morales", readMin:3,
+    gradient:"g2",
+    es:{ title:"La novela de ciencia ficción 'Fracturas' de la colombiana Valeria Ríos gana el Premio Booker Internacional", excerpt:"La obra, ambientada en Bogotá del año 2080, es la primera novela latinoamericana en ganar el prestigioso galardón literario.", body:"La escritora colombiana Valeria Ríos se convirtió ayer en la primera latinoamericana en ganar el Premio Booker Internacional por su novela 'Fracturas', un relato de ciencia ficción ambientado en Bogotá en el año 2080 que explora las consecuencias del colapso climático sobre las relaciones humanas.\n\nEl jurado elogió la obra como 'una visión deslumbrante y profundamente humanista del futuro', señalando que la traducción al inglés de Jorge Díaz captó con precisión el ritmo y la musicalidad del español de Ríos.\n\nRíos, de 34 años, recibió el galardón en la ceremonia celebrada en Londres y dedicó el premio a 'las ciudades latinoamericanas que todavía luchan por sobrevivir'.\n\n'Fracturas' ya ha sido traducida a 28 idiomas y ha vendido más de dos millones de ejemplares en sus primeros seis meses, una cifra inédita para una novela latinoamericana de ficción especulativa." },
+    en:{ title:"Colombian author Valeria Ríos' sci-fi novel 'Fracturas' wins the International Booker Prize", excerpt:"The novel, set in 2080 Bogotá, is the first Latin American novel to win the prestigious literary award.", body:"Colombian writer Valeria Ríos yesterday became the first Latin American to win the International Booker Prize for her novel 'Fracturas', a science fiction story set in Bogotá in the year 2080 that explores the consequences of climate collapse on human relationships.\n\nThe jury praised the work as 'a dazzling and deeply humanist vision of the future', noting that Jorge Díaz's English translation precisely captured the rhythm and musicality of Ríos' Spanish.\n\nRíos, 34, accepted the award at the London ceremony and dedicated the prize to 'the Latin American cities that are still fighting to survive'.\n\n'Fracturas' has already been translated into 28 languages and sold over two million copies in its first six months, an unprecedented figure for a Latin American work of speculative fiction." }
+  },
+  {
+    id:8, lang:"both", cat:"pol", date:"2025-02-28", author:"Héctor Vargas", readMin:5,
+    gradient:"g1",
+    es:{ title:"México y Unión Europea firman acuerdo de libre comercio ampliado que crea zona de 650 millones de consumidores", excerpt:"El tratado actualizado reemplaza al TLCUEM de 2000 e incluye capítulos innovadores sobre economía digital y propiedad intelectual.", body:"México y la Unión Europea suscribieron ayer el Acuerdo Global actualizado, un tratado de libre comercio de nueva generación que creará una zona de libre comercio para más de 650 millones de personas.\n\nEl nuevo instrumento, que reemplaza al tratado de 2000, incorpora capítulos sobre comercio digital, inteligencia artificial, propiedad intelectual reforzada y estándares laborales vinculantes alineados con convenios de la OIT.\n\nEl presidente de México calificó el acuerdo como 'el más ambicioso en la historia del comercio exterior mexicano', señalando que abrirá nuevos mercados para productos agrícolas, manufactureros y de servicios.\n\nSin embargo, organizaciones de productores europeos de quesos, vinos y aceite de oliva protestaron ante la sede del Parlamento Europeo, argumentando que las concesiones otorgadas a México pondrán en riesgo a productores locales." },
+    en:{ title:"Mexico and EU sign expanded free trade agreement creating a zone of 650 million consumers", excerpt:"The updated treaty replaces the 2000 MEFTA and includes groundbreaking chapters on the digital economy and intellectual property.", body:"Mexico and the European Union yesterday signed the updated Global Agreement, a next-generation free trade treaty that will create a free trade zone for more than 650 million people.\n\nThe new instrument, which replaces the 2000 treaty, incorporates chapters on digital trade, artificial intelligence, enhanced intellectual property and binding labor standards aligned with ILO conventions.\n\nMexico's president described the agreement as 'the most ambitious in the history of Mexican foreign trade', noting that it will open new markets for agricultural, manufacturing and services products.\n\nHowever, organizations representing European producers of cheese, wine and olive oil protested outside the European Parliament, arguing that the concessions granted to Mexico will jeopardize local producers." }
+  }
 ];
 
-let generatedArticle = null;
-let activeResultTab = 'es';
-
-const GRADIENTS = ['g1','g2','g3','g4','g5','g6'];
-
-// ─── TABS ───
-function showTab(name) {
-  ['generator','articles','jsoneditor'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = t===name?'block':'none';
-  });
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const titles = {generator:'GENERADOR IA', articles:'ARTÍCULOS', jsoneditor:'EDITOR JSON'};
-  document.getElementById('pageTitle').textContent = titles[name] || '';
-
-  if(name==='articles') renderTable();
-  if(name==='jsoneditor') renderJSONEditor();
-}
-
-// ─── GENERATE ───
-async function generateArticle() {
-  const topic = document.getElementById('topicInput').value.trim();
-  if(!topic) { notify('⚠️','Escribe un tema primero'); return; }
-
-  const cat = document.getElementById('catSelect').value;
-  const tone = document.getElementById('toneSelect').value;
-  const len = document.getElementById('lenSelect').value;
-  const ctx = document.getElementById('contextInput').value.trim();
-
-  const btn = document.getElementById('genBtn');
-  const icon = document.getElementById('genBtnIcon');
-  const txt = document.getElementById('genBtnText');
-  const status = document.getElementById('genStatus');
-
-  btn.disabled = true;
-  icon.innerHTML = '<span class="loader"></span>';
-  txt.textContent = 'GENERANDO...';
-  status.textContent = 'La IA está redactando en ES e EN...';
-
-  const lengthGuide = {short:'~250 palabras por idioma', medium:'~500 palabras por idioma', long:'~900 palabras por idioma'};
-  const toneGuide = {neutral:'objetivo e informativo', analytic:'analítico con contexto profundo', breaking:'urgente tipo breaking news', opinion:'columna de opinión con argumento'};
-  const catNames = {world:'Mundo',tech:'Tecnología',biz:'Economía',sci:'Ciencia',sport:'Deportes',pol:'Política',cult:'Cultura'};
-
-  const prompt = `Eres el editor jefe de un portal de noticias bilingüe de alta calidad. Genera un artículo periodístico profesional sobre este tema:
-
-TEMA: ${topic}
-CATEGORÍA: ${catNames[cat]}
-TONO: ${toneGuide[tone]}
-LONGITUD: ${lengthGuide[len]}
-${ctx ? 'CONTEXTO ADICIONAL: '+ctx : ''}
-
-Responde ÚNICAMENTE con un objeto JSON válido con esta estructura exacta (sin markdown, sin texto adicional):
-{
-  "es": {
-    "title": "Título en español (máximo 100 caracteres, impactante)",
-    "excerpt": "Resumen en español (1-2 oraciones, máximo 160 caracteres)",
-    "body": "Cuerpo completo del artículo en español. Párrafos separados con \\n\\n. Sin subtítulos markdown.",
-    "author": "Nombre Apellido (inventado pero creíble)"
+// Opinion articles
+const OPINIONS = [
+  { id:101, cat:"pol", gradient:"g1",
+    es:{ title:"La democracia liberal no está en crisis: está en metamorfosis", author:"Prof. Eduardo Salcedo · Universidad Autónoma" },
+    en:{ title:"Liberal democracy is not in crisis: it's in metamorphosis", author:"Prof. Eduardo Salcedo · Autonomous University" }
   },
-  "en": {
-    "title": "Title in English (max 100 chars, impactful)",
-    "excerpt": "Summary in English (1-2 sentences, max 160 chars)",
-    "body": "Full article body in English. Paragraphs separated by \\n\\n. No markdown headings.",
-    "author": "Same author name as Spanish version"
+  { id:102, cat:"tech", gradient:"g2",
+    es:{ title:"Por qué regular la IA sin entenderla es más peligroso que no regularla", author:"Dra. Carmen Vidal · Stanford AI Lab" },
+    en:{ title:"Why regulating AI without understanding it is more dangerous than not regulating it", author:"Dr. Carmen Vidal · Stanford AI Lab" }
   },
-  "readMin": 4
-}`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data = await res.json();
-    const raw = data.content?.map(c=>c.text||'').join('') || '';
-    
-    // Parse JSON — strip any markdown fences
-    const clean = raw.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
-
-    generatedArticle = {
-      id: ARTICLES.length + 101,
-      lang: 'both',
-      cat: cat,
-      date: new Date().toISOString().split('T')[0],
-      author: parsed.es.author,
-      readMin: parsed.readMin || 4,
-      gradient: GRADIENTS[Math.floor(Math.random()*GRADIENTS.length)],
-      es: { title:parsed.es.title, excerpt:parsed.es.excerpt, body:parsed.es.body },
-      en: { title:parsed.en.title, excerpt:parsed.en.excerpt, body:parsed.en.body }
-    };
-
-    showResult();
-    notify('✦','¡Artículo generado con éxito!');
-  } catch(e) {
-    console.error(e);
-    notify('⚠️','Error al generar. Verifica tu conexión.');
-  } finally {
-    btn.disabled = false;
-    icon.textContent = '✦';
-    txt.textContent = 'GENERAR ARTÍCULO';
-    status.textContent = '';
+  { id:103, cat:"biz", gradient:"g5",
+    es:{ title:"El nearshoring no es una solución: es el comienzo de un problema más grande", author:"Marcos Peña · Economista senior, CEPAL" },
+    en:{ title:"Nearshoring is not a solution: it's the beginning of a larger problem", author:"Marcos Peña · Senior Economist, ECLAC" }
+  },
+  { id:104, cat:"world", gradient:"g4",
+    es:{ title:"África en 2050: el continente que el mundo insiste en ignorar", author:"Amina Diallo · Periodista, Le Monde Afrique" },
+    en:{ title:"Africa in 2050: the continent the world insists on ignoring", author:"Amina Diallo · Journalist, Le Monde Afrique" }
   }
+];
+
+// ─────────────────────────────────────────────
+// STRINGS
+const STR = {
+  es: {
+    logoSub:"NOTICIAS INDEPENDIENTES",
+    nav:["Inicio","Mundo","Tecnología","Economía","Ciencia","Deportes","Cultura","Opinión"],
+    secMore:"MÁS NOTICIAS", secMoreLink:"Ver todo →",
+    secOpinion:"OPINIÓN",
+    nlH:"NEWSLETTER", nlP:"El mejor periodismo, en tu correo cada mañana.",
+    nlEmail:"correo@ejemplo.com", nlBtn:"SUSCRIBIRME",
+    trendH:"LO MÁS LEÍDO",
+    backBtn:"← VOLVER",
+    footerDesc:"Periodismo independiente. Noticias verificadas en español e inglés.",
+    footerCopy:"© 2025 VÉRTICE Media. Todos los derechos reservados.",
+    footerLinks:"Privacidad · Términos · Cookies · Publicidad",
+    fc1:{ title:"SECCIONES", links:["Mundo","Tecnología","Economía","Ciencia","Deportes","Cultura"] },
+    fc2:{ title:"LA EMPRESA", links:["Quiénes somos","Anúnciate","Contacto","Trabaja con nosotros"] },
+    fc3:{ title:"SÍGUENOS", links:["Twitter / X","Instagram","YouTube","Newsletter"] },
+    ticker:["Emergencia humanitaria en el Sahel afecta a 40 millones","Chip cuántico de Google supera a todas las supercomputadoras","Peso mexicano en máximos históricos frente al dólar","Argentina campeona de la Copa América 2025","CERN confirma posible quinta fuerza de la naturaleza","Emergencia humanitaria en el Sahel afecta a 40 millones","Chip cuántico de Google supera a todas las supercomputadoras","Peso mexicano en máximos históricos frente al dólar"],
+    catNames:{ pol:"POLÍTICA", tech:"TECNOLOGÍA", biz:"ECONOMÍA", sci:"CIENCIA", sport:"DEPORTES", world:"MUNDO", cult:"CULTURA" },
+    readMin:" min de lectura", hoursAgo:"h atrás", author:"Por "
+  },
+  en: {
+    logoSub:"INDEPENDENT NEWS",
+    nav:["Home","World","Tech","Economy","Science","Sports","Culture","Opinion"],
+    secMore:"MORE STORIES", secMoreLink:"See all →",
+    secOpinion:"OPINION",
+    nlH:"NEWSLETTER", nlP:"The best journalism, in your inbox every morning.",
+    nlEmail:"email@example.com", nlBtn:"SUBSCRIBE",
+    trendH:"MOST READ",
+    backBtn:"← BACK",
+    footerDesc:"Independent journalism. Verified news in Spanish and English.",
+    footerCopy:"© 2025 VÉRTICE Media. All rights reserved.",
+    footerLinks:"Privacy · Terms · Cookies · Advertise",
+    fc1:{ title:"SECTIONS", links:["World","Technology","Economy","Science","Sports","Culture"] },
+    fc2:{ title:"COMPANY", links:["About us","Advertise","Contact","Careers"] },
+    fc3:{ title:"FOLLOW US", links:["Twitter / X","Instagram","YouTube","Newsletter"] },
+    ticker:["Sahel humanitarian emergency affects 40 million people","Google quantum chip beats all supercomputers","Mexican peso at historic high against the dollar","Argentina crowned Copa América 2025 champions","CERN confirms possible fifth force of nature","Sahel humanitarian emergency affects 40 million people","Google quantum chip beats all supercomputers","Mexican peso at historic high against the dollar"],
+    catNames:{ pol:"POLITICS", tech:"TECHNOLOGY", biz:"ECONOMY", sci:"SCIENCE", sport:"SPORTS", world:"WORLD", cult:"CULTURE" },
+    readMin:" min read", hoursAgo:"h ago", author:"By "
+  }
+};
+
+let lang = 'es';
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('on', b.textContent === l.toUpperCase()));
+  render();
 }
 
-function showResult() {
-  document.getElementById('resultBox').classList.add('show');
-  switchResultTab('es');
+function catClass(cat) {
+  return `cat-${cat}`;
 }
 
-function switchResultTab(tab) {
-  activeResultTab = tab;
-  document.querySelectorAll('.result-tab').forEach((t,i)=>{
-    t.classList.toggle('active', ['es','en','json'][i]===tab);
+function render() {
+  const s = STR[lang];
+
+  // Date
+  document.getElementById('dateStr').textContent =
+    new Date().toLocaleDateString(lang==='es'?'es-MX':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  // Ticker
+  const tItems = s.ticker.map(t=>`<span>${t}</span>`).join('');
+  document.getElementById('tickerInner').innerHTML = tItems + tItems;
+
+  document.getElementById('logoSub').textContent = s.logoSub;
+
+  // Nav
+  document.getElementById('mainNav').innerHTML = s.nav.map((n,i)=>
+    `<a href="#" class="${i===0?'active':''}" onclick="event.preventDefault()">${n}</a>`).join('');
+
+  // HERO GRID — first article big, next 2 medium, sidebar has 2 small
+  const arts = ARTICLES;
+  const big = arts[0];
+  const med1 = arts[1];
+  const med2 = arts[2];
+  const side1 = arts[3];
+  const side2 = arts[4];
+
+  document.getElementById('heroGrid').innerHTML = `
+    <div class="hero-cell big" onclick="showArticle(${big.id})">
+      <div class="art-img"><div class="art-img-inner ${big.gradient}"></div><div class="art-img-label">${s.catNames[big.cat]}</div></div>
+      <div class="article-cat ${catClass(big.cat)}">${s.catNames[big.cat]}</div>
+      <div class="article-title big">${big[lang].title}</div>
+      <div class="article-excerpt">${big[lang].excerpt}</div>
+      <div class="article-meta"><span>${s.author}${big.author}</span><span class="sep">·</span><span>${big.readMin}${s.readMin}</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1px;background:var(--border)">
+      <div class="hero-cell med" onclick="showArticle(${med1.id})">
+        <div class="article-cat ${catClass(med1.cat)}">${s.catNames[med1.cat]}</div>
+        <div class="article-title med">${med1[lang].title}</div>
+        <div class="article-excerpt" style="font-size:13px">${med1[lang].excerpt}</div>
+        <div class="article-meta"><span>${med1.readMin}${s.readMin}</span></div>
+      </div>
+      <div class="hero-cell med" onclick="showArticle(${med2.id})">
+        <div class="article-cat ${catClass(med2.cat)}">${s.catNames[med2.cat]}</div>
+        <div class="article-title med">${med2[lang].title}</div>
+        <div class="article-excerpt" style="font-size:13px">${med2[lang].excerpt}</div>
+        <div class="article-meta"><span>${med2.readMin}${s.readMin}</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;background:var(--bg)">
+      <div class="sidebar-art" onclick="showArticle(${side1.id})">
+        <div class="article-cat ${catClass(side1.cat)}" style="margin-bottom:6px">${s.catNames[side1.cat]}</div>
+        <div class="article-title sml">${side1[lang].title}</div>
+        <div class="article-meta" style="margin-top:6px">${side1.readMin}${s.readMin}</div>
+      </div>
+      <div class="sidebar-art" onclick="showArticle(${side2.id})">
+        <div class="article-cat ${catClass(side2.cat)}" style="margin-bottom:6px">${s.catNames[side2.cat]}</div>
+        <div class="article-title sml">${side2[lang].title}</div>
+        <div class="article-meta" style="margin-top:6px">${side2.readMin}${s.readMin}</div>
+      </div>
+      <div class="ad-rect" style="margin:16px;height:180px">
+        <span class="ad-tag">📢 AdSense 300×250</span>
+      </div>
+    </div>`;
+
+  // Section strings
+  document.getElementById('secMore').textContent = s.secMore;
+  document.getElementById('secMoreLink').textContent = s.secMoreLink;
+  document.getElementById('secOpinion').textContent = s.secOpinion;
+
+  // Cards grid (articles 5-7)
+  const cardArts = [arts[5], arts[6], arts[7]];
+  document.getElementById('cardGrid').innerHTML = cardArts.map((a,i)=>`
+    <div class="card" onclick="showArticle(${a.id})">
+      <div class="card-num">0${i+1}</div>
+      <div class="article-cat ${catClass(a.cat)}">${s.catNames[a.cat]}</div>
+      <div class="article-title">${a[lang].title}</div>
+      <div class="article-meta" style="margin-top:8px">${a.readMin}${s.readMin}</div>
+    </div>`).join('');
+
+  // Opinion
+  document.getElementById('opinionList').innerHTML = OPINIONS.map((o,i)=>`
+    <div class="opinion-item">
+      <div class="opinion-num">0${i+1}</div>
+      <div>
+        <div class="article-title">${o[lang].title}</div>
+        <div class="opinion-author">${o[lang].author}</div>
+      </div>
+    </div>`).join('');
+
+  // Newsletter
+  document.getElementById('nlH').textContent = s.nlH;
+  document.getElementById('nlP').textContent = s.nlP;
+  document.getElementById('nlEmail').placeholder = s.nlEmail;
+  document.getElementById('nlBtnEl').textContent = s.nlBtn;
+
+  // Trending
+  document.getElementById('trendH').textContent = s.trendH;
+  document.getElementById('trendList').innerHTML = ARTICLES.slice(0,5).map((a,i)=>`
+    <div class="trend-item" onclick="showArticle(${a.id})">
+      <div class="trend-n">${i+1}</div>
+      <div class="trend-t">${a[lang].title}</div>
+    </div>`).join('');
+
+  // Back btn
+  document.getElementById('backBtn').textContent = s.backBtn;
+
+  // Footer
+  document.getElementById('footerDesc').textContent = s.footerDesc;
+  document.getElementById('footerCopy').textContent = s.footerCopy;
+  document.getElementById('footerLinks').textContent = s.footerLinks;
+  ['fc1','fc2','fc3'].forEach(id=>{
+    const col = s[id];
+    document.getElementById(id).innerHTML = `<h5>${col.title}</h5>${col.links.map(l=>`<a href="#">${l}</a>`).join('')}`;
   });
-  renderResultContent();
 }
 
-function renderResultContent() {
-  if(!generatedArticle) return;
-  const a = generatedArticle;
-  const el = document.getElementById('resultContent');
+function showArticle(id) {
+  const art = [...ARTICLES, ...OPINIONS].find(a=>a.id===id);
+  if(!art) return;
+  const s = STR[lang];
+  const catName = s.catNames[art.cat] || art.cat.toUpperCase();
 
-  if(activeResultTab==='json') {
-    el.innerHTML = `<pre style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#7ec8e3;line-height:1.7;overflow-x:auto">${JSON.stringify(a,null,2)}</pre>`;
-    return;
-  }
+  const bodyHtml = art[lang].body
+    ? art[lang].body.split('\n\n').map(p=>`<p>${p}</p>`).join('')
+    : '<p>Contenido completo próximamente.</p>';
 
-  const d = a[activeResultTab];
-  el.innerHTML = `
-    <div class="result-field"><div class="result-field-label">Título</div><div class="result-field-val title">${d.title}</div></div>
-    <div class="result-field"><div class="result-field-label">Resumen / Excerpt</div><div class="result-field-val">${d.excerpt}</div></div>
-    <div class="result-field"><div class="result-field-label">Artículo completo</div><div class="result-field-val body">${d.body.split('\n\n').map(p=>`<p style="margin-bottom:12px">${p}</p>`).join('')}</div></div>
-    <div class="result-field"><div class="result-field-label">Metadatos</div><div class="result-field-val" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)">Autor: ${d.author} · ${a.readMin} min · Categoría: ${a.cat} · ${a.date}</div></div>`;
-}
+  document.getElementById('artFull').innerHTML = `
+    <div class="art-img" style="aspect-ratio:21/9;margin-bottom:28px">
+      <div class="art-img-inner ${art.gradient}" style="width:100%;height:100%"></div>
+      <div class="art-img-label">${catName}</div>
+    </div>
+    <div class="art-full-cat ${catClass(art.cat)}">${catName}</div>
+    <div class="art-full-title">${art[lang].title}</div>
+    <div class="art-full-meta">
+      <span>${art.author ? s.author+art.author : ''}</span>
+      ${art.readMin?`<span>·</span><span>${art.readMin}${s.readMin}</span>`:''}
+      ${art.date?`<span>·</span><span>${art.date}</span>`:''}
+    </div>
+    <div class="art-full-body">${bodyHtml}</div>`;
 
-function addToPortal() {
-  if(!generatedArticle) return;
-  ARTICLES.unshift(generatedArticle);
-  document.getElementById('statArts').textContent = ARTICLES.length;
-  notify('✓','Artículo agregado al portal. Ahora cópialo al index.html');
-  document.getElementById('resultBox').classList.remove('show');
-  generatedArticle = null;
-}
-
-function copyJSON() {
-  if(!generatedArticle) return;
-  navigator.clipboard.writeText(JSON.stringify(generatedArticle,null,2))
-    .then(()=>notify('✦','JSON copiado al portapapeles'))
-    .catch(()=>notify('⚠️','Error al copiar'));
+  document.getElementById('homePage').classList.add('hidden');
+  document.getElementById('articlePage').classList.add('active');
+  window.scrollTo(0,0);
 }
 
-function clearForm() {
-  document.getElementById('topicInput').value='';
-  document.getElementById('contextInput').value='';
-  document.getElementById('resultBox').classList.remove('show');
-  generatedArticle=null;
+function showHome() {
+  document.getElementById('homePage').classList.remove('hidden');
+  document.getElementById('articlePage').classList.remove('active');
+  window.scrollTo(0,0);
 }
 
-// ─── TABLE ───
-function renderTable() {
-  const catPill = c => `<span class="pill pill-${c}">${c.toUpperCase()}</span>`;
-  document.getElementById('articlesTableBody').innerHTML = ARTICLES.map(a=>`
-    <tr>
-      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)">${a.id}</td>
-      <td style="max-width:320px"><div style="font-weight:500;font-size:13px;line-height:1.4">${a.es.title}</div></td>
-      <td>${catPill(a.cat)}</td>
-      <td style="font-size:12px;color:var(--muted)">${a.author||'—'}</td>
-      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)">${a.date}</td>
-      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)">${a.readMin} min</td>
-      <td><button class="act-btn" onclick="notify('✦','Edición manual: usa el Editor JSON')">Editar</button></td>
-    </tr>`).join('');
-}
-
-// ─── JSON EDITOR ───
-function renderJSONEditor() {
-  document.getElementById('jsonEditor').value = JSON.stringify(ARTICLES,null,2);
-}
-function formatJSON() {
-  try {
-    const v = document.getElementById('jsonEditor').value;
-    document.getElementById('jsonEditor').value = JSON.stringify(JSON.parse(v),null,2);
-    notify('✓','JSON formateado');
-  } catch(e) { notify('⚠️','JSON inválido: '+e.message); }
-}
-function saveJSON() {
-  try {
-    ARTICLES = JSON.parse(document.getElementById('jsonEditor').value);
-    document.getElementById('statArts').textContent = ARTICLES.length;
-    notify('✓','Guardado en memoria. Pega el JSON en index.html para publicar.');
-  } catch(e) { notify('⚠️','JSON inválido'); }
-}
-
-// ─── NOTIFY ───
-function notify(icon, text) {
-  document.getElementById('notifIcon').textContent = icon;
-  document.getElementById('notifText').textContent = text;
-  const n = document.getElementById('notif');
-  n.classList.add('show');
-  setTimeout(()=>n.classList.remove('show'), 3500);
-}
+render();
 </script>
 </body>
 </html>
